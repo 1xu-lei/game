@@ -1,0 +1,96 @@
+/* ============================================================
+   雨落街角 / Rainfall Corner — Design Tokens（唯一真源）
+   任何组件不得另起一套颜色。改配色只改这里。
+   ============================================================ */
+:root {
+  /* —— 基础色板（规格书 §5.2 固定值）—— */
+  --bg: #071321;
+  --surface: #102235;
+  --surface-elevated: #172c43;
+  --border: #24435d;
+
+  --cyan: #38bdf8;
+  --teal: #2dd4bf;
+  --amber: #f5b544;
+  --safe: #4ccb86;
+  --risk: #f08b36;
+  --danger: #ef5b64;
+
+  --text: #e7f0f7;
+  --text-muted: #91a9bc;
+
+  /* —— 派生层（由上面推导，不引入新色相）—— */
+  --border-soft: color-mix(in srgb, var(--border) 62%, transparent);
+  --border-strong: color-mix(in srgb, var(--cyan) 42%, var(--border));
+  --line-hair: color-mix(in srgb, var(--border) 45%, transparent);
+
+  --surface-1: color-mix(in srgb, var(--surface) 88%, var(--bg));
+  --surface-2: var(--surface);
+  --surface-3: var(--surface-elevated);
+
+  --text-dim: color-mix(in srgb, var(--text-muted) 78%, var(--bg));
+
+  --cyan-soft: color-mix(in srgb, var(--cyan) 16%, transparent);
+  --cyan-line: color-mix(in srgb, var(--cyan) 34%, transparent);
+  --amber-soft: color-mix(in srgb, var(--amber) 15%, transparent);
+  --safe-soft: color-mix(in srgb, var(--safe) 16%, transparent);
+  --risk-soft: color-mix(in srgb, var(--risk) 15%, transparent);
+  --danger-soft: color-mix(in srgb, var(--danger) 15%, transparent);
+
+  /* —— 排版 —— */
+  --font-sans: 'Microsoft YaHei UI', 'PingFang SC', 'Noto Sans CJK SC',
+    'Source Han Sans SC', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-num: 'Bahnschrift', 'DIN Alternate', 'Segoe UI Variable Display',
+    'HarmonyOS Sans', var(--font-sans);
+  --font-mono: 'Cascadia Mono', 'JetBrains Mono', Consolas, var(--font-sans);
+
+  --fs-micro: 10px;
+  --fs-tiny: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 15px;
+  --fs-lg: 18px;
+  --fs-xl: 24px;
+  --fs-hero: 46px;
+
+  /* —— 间距 / 圆角 / 阴影 —— */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+
+  --shadow-panel: 0 18px 40px -24px rgba(0, 0, 0, 0.9),
+    0 1px 0 0 color-mix(in srgb, var(--text) 6%, transparent) inset;
+  --shadow-lift: 0 24px 54px -20px rgba(0, 0, 0, 0.95);
+  --glow-cyan: 0 0 0 1px var(--cyan-line), 0 0 26px -6px color-mix(in srgb, var(--cyan) 55%, transparent);
+  --glow-amber: 0 0 0 1px color-mix(in srgb, var(--amber) 55%, transparent),
+    0 14px 34px -12px color-mix(in srgb, var(--amber) 50%, transparent);
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-1: 140ms;
+  --dur-2: 240ms;
+  --dur-3: 420ms;
+
+  /* —— 布局常量（三栏宽度，各版本共用）—— */
+  --rail-top: 58px;
+  --rail-left: 306px;
+  --rail-right: 358px;
+  --rail-bottom: 208px;
+}
+
+/* 场景专属色相：仅在允许色板内取色，不得新增色值 */
+:root {
+  --scene-school: var(--cyan);
+  --scene-market: var(--amber);
+  --scene-park: var(--safe);
+  --scene-residential: color-mix(in srgb, var(--teal) 72%, var(--cyan));
+  --scene-station: var(--risk);
+}

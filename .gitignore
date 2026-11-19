@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+
+# 本地审阅脚本与截图产物
+.review/
+
+# 日志与本地数据库
+*.log
+*.db
+*.sqlite3

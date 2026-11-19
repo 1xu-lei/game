@@ -1,0 +1,78 @@
+/* ============================================================
+   Naive UI 局部覆盖
+   只覆盖 Naive 组件读取的 CSS 变量与表层背景，不改其内部结构，
+   也不引入任何第二套组件库的配色。
+   ============================================================ */
+.n-button.rc-btn {
+  --n-height: 44px;
+  --n-font-size: 14px;
+  --n-font-weight: 600;
+  --n-border-radius: 11px;
+  --n-padding: 0 20px;
+  --n-border: 1px solid transparent;
+  --n-border-hover: 1px solid transparent;
+  --n-border-pressed: 1px solid transparent;
+  --n-border-focus: 1px solid transparent;
+}
+
+/* 主行动（决策琥珀） */
+.n-button.rc-btn--amber,
+.n-button.rc-btn--amber:focus {
+  color: #14100a !important;
+  background-color: var(--amber) !important;
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--amber) 88%, #ffffff),
+    color-mix(in srgb, var(--amber) 96%, #000000)
+  ) !important;
+  border: 1px solid color-mix(in srgb, var(--amber) 70%, #000000) !important;
+  box-shadow: var(--glow-amber) !important;
+}
+
+.n-button.rc-btn--amber:hover {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--amber) 96%, #ffffff),
+    var(--amber)
+  ) !important;
+  transform: translateY(-1px);
+}
+
+.n-button.rc-btn--amber:active {
+  transform: translateY(0);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--amber) 45%, transparent) !important;
+}
+
+/* 次级行动（描边幽灵） */
+.n-button.rc-btn--ghost,
+.n-button.rc-btn--ghost:focus {
+  color: var(--text) !important;
+  background-color: color-mix(in srgb, var(--surface-elevated) 70%, transparent) !important;
+  background-image: none !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+.n-button.rc-btn--ghost:hover {
+  color: var(--text) !important;
+  background-color: color-mix(in srgb, var(--surface-elevated) 96%, transparent) !important;
+  border-color: var(--border-strong) !important;
+}
+
+/* 禁用：仍然给出可读原因（原因文案在按钮旁边，不藏在按钮里） */
+.n-button.rc-btn.is-locked,
+.n-button.rc-btn.is-locked:hover,
+.n-button.rc-btn.is-locked:focus,
+.n-button.rc-btn.is-locked:active {
+  color: var(--text-dim) !important;
+  background-color: color-mix(in srgb, var(--text) 6%, transparent) !important;
+  background-image: none !important;
+  border: 1px dashed var(--border) !important;
+  box-shadow: none !important;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.n-button.rc-btn .n-button__content {
+  letter-spacing: 0.04em;
+}

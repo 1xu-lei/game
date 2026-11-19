@@ -1,0 +1,898 @@
+{
+  "rulesVersion": "rain-five-v1",
+  "units": "模拟格",
+  "siteOrder": [
+    "school",
+    "market",
+    "park",
+    "homes",
+    "stop"
+  ],
+  "budget": 5,
+  "baselinePlan": [
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseStopOutletPerStep": 5,
+  "siteParameters": [
+    {
+      "id": "school",
+      "project": "透水操场",
+      "area": 1.05,
+      "runoff": 0.94,
+      "transfer": 0.72,
+      "seep": 0.56,
+      "capacity": 0,
+      "intake": 0,
+      "soak": 0,
+      "outlet": 0
+    },
+    {
+      "id": "market",
+      "project": "地下蓄水池",
+      "area": 1.14,
+      "runoff": 0.95,
+      "transfer": 0.7,
+      "seep": 0,
+      "capacity": 3.5,
+      "intake": 1.34,
+      "soak": 0,
+      "outlet": 0
+    },
+    {
+      "id": "park",
+      "project": "下凹绿地",
+      "area": 0.8,
+      "runoff": 0.55,
+      "transfer": 0.64,
+      "seep": 0.12,
+      "capacity": 2.2,
+      "intake": 0.86,
+      "soak": 0.34,
+      "outlet": 0
+    },
+    {
+      "id": "homes",
+      "project": "植草沟",
+      "area": 0.91,
+      "runoff": 0.77,
+      "transfer": 0.61,
+      "seep": 0.39,
+      "capacity": 1.15,
+      "intake": 0.58,
+      "soak": 0.24,
+      "outlet": 0
+    },
+    {
+      "id": "stop",
+      "project": "站前排水口",
+      "area": 0.64,
+      "runoff": 0.76,
+      "transfer": 0,
+      "seep": 0,
+      "capacity": 0,
+      "intake": 0,
+      "soak": 0,
+      "outlet": 0.52
+    }
+  ],
+  "scoreRule": "站前峰值按一位小数比较，严格低为胜。双人同分归先手。",
+  "waterNetwork": [
+    {
+      "from": "school",
+      "to": "park"
+    },
+    {
+      "from": "market",
+      "to": "homes"
+    },
+    {
+      "from": "park",
+      "to": "stop"
+    },
+    {
+      "from": "homes",
+      "to": "stop"
+    },
+    {
+      "from": "stop",
+      "to": "outlet"
+    }
+  ],
+  "invalidFormalPlans": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      2,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      1.5,
+      0.5
+    ],
+    [
+      -1,
+      1,
+      1,
+      2,
+      2
+    ]
+  ],
+  "scenarios": {
+    "storm1": {
+      "label": "放学阵雨",
+      "rain": [
+        1,
+        2,
+        4,
+        6,
+        7,
+        5,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "baseStreetPreview": 67.5,
+      "soloTarget": 48.8,
+      "cases": [
+        {
+          "plan": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "peakScore": 48.8,
+          "soloResult": "lose",
+          "peakStep": 8,
+          "atPeak": {
+            "surfaceWater": [
+              0.7303,
+              1.1682,
+              1.8303,
+              3.0722,
+              48.8043
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              1.8779,
+              2.7257,
+              8.0592
+            ],
+            "interceptedOrExtraOutlet": [
+              0.56,
+              0,
+              0.46,
+              0.63,
+              0.52
+            ],
+            "toDownstream": [
+              1.8779,
+              2.7257,
+              3.2539,
+              4.8053,
+              0
+            ],
+            "externalOutflow": 5.52
+          }
+        },
+        {
+          "plan": [
+            5,
+            0,
+            0,
+            0,
+            0
+          ],
+          "peakScore": 50.5,
+          "soloResult": "lose",
+          "peakStep": 8,
+          "atPeak": {
+            "surfaceWater": [
+              0,
+              1.1693,
+              0.9684,
+              3.4933,
+              50.4624
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              0,
+              2.7284,
+              7.1854
+            ],
+            "interceptedOrExtraOutlet": [
+              2.2978,
+              0,
+              0,
+              0,
+              0
+            ],
+            "toDownstream": [
+              0,
+              2.7284,
+              1.7215,
+              5.4639,
+              0
+            ],
+            "externalOutflow": 5
+          }
+        },
+        {
+          "plan": [
+            0,
+            5,
+            0,
+            0,
+            0
+          ],
+          "peakScore": 51.8,
+          "soloResult": "lose",
+          "peakStep": 9,
+          "atPeak": {
+            "surfaceWater": [
+              0.5418,
+              0.6615,
+              1.5271,
+              2.1083,
+              51.7615
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              1.3932,
+              1.5436,
+              6.0124
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "toDownstream": [
+              1.3932,
+              1.5436,
+              2.7149,
+              3.2976,
+              0
+            ],
+            "externalOutflow": 5
+          }
+        },
+        {
+          "plan": [
+            0,
+            0,
+            5,
+            0,
+            0
+          ],
+          "peakScore": 43.1,
+          "soloResult": "win",
+          "peakStep": 8,
+          "atPeak": {
+            "surfaceWater": [
+              0.9481,
+              1.1693,
+              0.9898,
+              3.4933,
+              43.1473
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              2.4379,
+              2.7284,
+              7.2235
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              2.3,
+              0,
+              0
+            ],
+            "toDownstream": [
+              2.4379,
+              2.7284,
+              1.7596,
+              5.4639,
+              0
+            ],
+            "externalOutflow": 5
+          }
+        },
+        {
+          "plan": [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          "peakScore": 42.8,
+          "soloResult": "win",
+          "peakStep": 8,
+          "atPeak": {
+            "surfaceWater": [
+              0.9481,
+              1.1693,
+              2.4087,
+              1.4334,
+              42.8388
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              2.4379,
+              2.7284,
+              6.5242
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              0,
+              3.15,
+              0
+            ],
+            "toDownstream": [
+              2.4379,
+              2.7284,
+              4.2822,
+              2.242,
+              0
+            ],
+            "externalOutflow": 5
+          }
+        },
+        {
+          "plan": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "peakScore": 50.1,
+          "soloResult": "lose",
+          "peakStep": 8,
+          "atPeak": {
+            "surfaceWater": [
+              0.9481,
+              1.1693,
+              2.4087,
+              3.4933,
+              50.0773
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              2.4379,
+              2.7284,
+              9.746
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              0,
+              0,
+              2.6
+            ],
+            "toDownstream": [
+              2.4379,
+              2.7284,
+              4.2822,
+              5.4639,
+              0
+            ],
+            "externalOutflow": 7.6
+          }
+        },
+        {
+          "plan": [
+            2,
+            0,
+            0,
+            1,
+            2
+          ],
+          "peakScore": 48.8,
+          "soloResult": "lose",
+          "peakStep": 8,
+          "atPeak": {
+            "surfaceWater": [
+              0.5125,
+              1.1693,
+              1.7793,
+              3.0893,
+              48.8054
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              1.3179,
+              2.7284,
+              7.9952
+            ],
+            "interceptedOrExtraOutlet": [
+              1.12,
+              0,
+              0,
+              0.63,
+              1.04
+            ],
+            "toDownstream": [
+              1.3179,
+              2.7284,
+              3.1633,
+              4.8319,
+              0
+            ],
+            "externalOutflow": 6.04
+          }
+        }
+      ],
+      "duelExamples": [
+        {
+          "p1": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "p2": [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          "winner": "P2"
+        },
+        {
+          "p1": [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          "p2": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "winner": "P1"
+        },
+        {
+          "p1": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "p2": [
+            2,
+            0,
+            0,
+            1,
+            2
+          ],
+          "winner": "P1"
+        }
+      ]
+    },
+    "storm2": {
+      "label": "短时强降雨",
+      "rain": [
+        0,
+        0,
+        0,
+        1,
+        3,
+        14,
+        9,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "baseStreetPreview": 79.2,
+      "soloTarget": 64.6,
+      "cases": [
+        {
+          "plan": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "peakScore": 64.6,
+          "soloResult": "lose",
+          "peakStep": 9,
+          "atPeak": {
+            "surfaceWater": [
+              0.5763,
+              0.9992,
+              1.9987,
+              3.3372,
+              64.6183
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              1.482,
+              2.3315,
+              8.7729
+            ],
+            "interceptedOrExtraOutlet": [
+              0.56,
+              0,
+              0.46,
+              0.63,
+              0.52
+            ],
+            "toDownstream": [
+              1.482,
+              2.3315,
+              3.5532,
+              5.2197,
+              0
+            ],
+            "externalOutflow": 5.52
+          }
+        },
+        {
+          "plan": [
+            5,
+            0,
+            0,
+            0,
+            0
+          ],
+          "peakScore": 67.8,
+          "soloResult": "lose",
+          "peakStep": 9,
+          "atPeak": {
+            "surfaceWater": [
+              0,
+              1.012,
+              1.3244,
+              3.8443,
+              67.8327
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              0,
+              2.3613,
+              8.3673
+            ],
+            "interceptedOrExtraOutlet": [
+              1.7518,
+              0,
+              0,
+              0,
+              0
+            ],
+            "toDownstream": [
+              0,
+              2.3613,
+              2.3545,
+              6.0128,
+              0
+            ],
+            "externalOutflow": 5
+          }
+        },
+        {
+          "plan": [
+            0,
+            5,
+            0,
+            0,
+            0
+          ],
+          "peakScore": 63.5,
+          "soloResult": "win",
+          "peakStep": 9,
+          "atPeak": {
+            "surfaceWater": [
+              0.794,
+              0.7744,
+              2.6084,
+              2.8305,
+              63.4526
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              2.0417,
+              1.8069,
+              9.0643
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "toDownstream": [
+              2.0417,
+              1.8069,
+              4.6371,
+              4.4272,
+              0
+            ],
+            "externalOutflow": 5
+          }
+        },
+        {
+          "plan": [
+            0,
+            0,
+            5,
+            0,
+            0
+          ],
+          "peakScore": 60.3,
+          "soloResult": "win",
+          "peakStep": 9,
+          "atPeak": {
+            "surfaceWater": [
+              0.794,
+              1.012,
+              0.7562,
+              3.8443,
+              60.2622
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              2.0417,
+              2.3613,
+              7.3571
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              2.4491,
+              0,
+              0
+            ],
+            "toDownstream": [
+              2.0417,
+              2.3613,
+              1.3443,
+              6.0128,
+              0
+            ],
+            "externalOutflow": 5
+          }
+        },
+        {
+          "plan": [
+            0,
+            0,
+            0,
+            5,
+            0
+          ],
+          "peakScore": 61.4,
+          "soloResult": "win",
+          "peakStep": 9,
+          "atPeak": {
+            "surfaceWater": [
+              0.794,
+              1.012,
+              2.6084,
+              1.7081,
+              61.4452
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              2.0417,
+              2.3613,
+              7.3087
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              0,
+              3.15,
+              0
+            ],
+            "toDownstream": [
+              2.0417,
+              2.3613,
+              4.6371,
+              2.6716,
+              0
+            ],
+            "externalOutflow": 5
+          }
+        },
+        {
+          "plan": [
+            0,
+            0,
+            0,
+            0,
+            5
+          ],
+          "peakScore": 66.6,
+          "soloResult": "lose",
+          "peakStep": 9,
+          "atPeak": {
+            "surfaceWater": [
+              0.794,
+              1.012,
+              2.6084,
+              3.8443,
+              66.6225
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              2.0417,
+              2.3613,
+              10.6499
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              0,
+              0,
+              2.6
+            ],
+            "toDownstream": [
+              2.0417,
+              2.3613,
+              4.6371,
+              6.0128,
+              0
+            ],
+            "externalOutflow": 7.6
+          }
+        },
+        {
+          "plan": [
+            0,
+            1,
+            0,
+            2,
+            2
+          ],
+          "peakScore": 64.6,
+          "soloResult": "lose",
+          "peakStep": 9,
+          "atPeak": {
+            "surfaceWater": [
+              0.794,
+              0.9992,
+              2.6084,
+              2.9093,
+              64.6208
+            ],
+            "upstreamInflow": [
+              0,
+              0,
+              2.0417,
+              2.3315,
+              9.1875
+            ],
+            "interceptedOrExtraOutlet": [
+              0,
+              0,
+              0,
+              1.26,
+              1.04
+            ],
+            "toDownstream": [
+              2.0417,
+              2.3315,
+              4.6371,
+              4.5504,
+              0
+            ],
+            "externalOutflow": 6.04
+          }
+        }
+      ],
+      "duelExamples": [
+        {
+          "p1": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "p2": [
+            0,
+            0,
+            5,
+            0,
+            0
+          ],
+          "winner": "P2"
+        },
+        {
+          "p1": [
+            0,
+            0,
+            5,
+            0,
+            0
+          ],
+          "p2": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "winner": "P1"
+        },
+        {
+          "p1": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "p2": [
+            0,
+            1,
+            0,
+            2,
+            2
+          ],
+          "winner": "P1"
+        }
+      ]
+    }
+  }
+}

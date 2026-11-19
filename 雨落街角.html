@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4f6f2"><title>雨落街角 · 河湾街区</title>
+<style>
+:root{color-scheme:light;--paper:#f4f6f2;--card:#fff;--ink:#203b34;--soft:#526a60;--line:#d8e2d9;--green:#235d4e;--mint:#e8f1eb;--blue:#397e95;--ochre:#88632d;--warn:#865625;--num:"Segoe UI",Arial,sans-serif}*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:var(--paper);font:15px/1.55 "Segoe UI","Microsoft YaHei","PingFang SC",sans-serif}button,input{font:inherit}button{cursor:pointer;color:inherit}button:disabled{cursor:default;opacity:.46}button:focus-visible,input:focus-visible{outline:3px solid #427b9e;outline-offset:2px}h1,h2,h3,p{margin:0}button{border:0;touch-action:manipulation}button,svg{-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
+.head{background:#fcfdfb;border-bottom:1px solid var(--line)}.inside,main{width:min(1280px,calc(100% - 48px));margin:auto}.inside,.row-between,.turn-head,.timeline,.pt-controls,.foot-controls{display:flex;align-items:center;justify-content:space-between;gap:10px}.inside{min-height:57px}.brand{font-weight:700;letter-spacing:.045em;font-size:20px;display:flex;align-items:center;gap:10px}.brand svg{width:31px;height:31px}.link-btn,.line-btn,.mode,.storm,.picker,.smallbtn,.primary{border-radius:8px;min-height:36px;font-size:13px;padding:6px 12px;font-weight:550}.link-btn{background:transparent;color:var(--soft);padding-inline:2px}.link-btn:hover:enabled{color:var(--green);text-decoration:underline}.line-btn,.smallbtn,.picker,.mode,.storm{background:#fff;border:1px solid var(--line)}.line-btn:hover:enabled,.smallbtn:hover:enabled,.picker:hover:enabled,.mode:hover:enabled,.storm:hover:enabled{border-color:#779a88}main{padding:19px 0 35px}.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:16px}.intro h1{font-size:clamp(24px,3.2vw,38px);letter-spacing:-.045em;font-weight:670;line-height:1.2}.intro p{margin-top:5px;color:var(--soft);font-size:14px}.setting{display:flex;gap:10px;flex-wrap:wrap}.pillset{display:flex;gap:2px;padding:3px;background:#e9eeea;border:1px solid var(--line);border-radius:10px}.mode,.storm{border:1px solid transparent;background:transparent;font-size:13px;padding:5px 9px;min-height:31px;white-space:nowrap}.pillset [aria-pressed=true]{background:white;box-shadow:0 1px 3px #294b3c25;border-color:var(--line)}
+.board{display:grid;grid-template-columns:minmax(0,1.88fr) minmax(310px,.90fr);gap:15px;align-items:start}.panel{background:white;border:1px solid var(--line);border-radius:15px;overflow:hidden;min-width:0}.panel h2{font-weight:650;font-size:17px;letter-spacing:.01em}.pad{padding:14px 16px}.small{font-size:12px;color:var(--soft)}.map-title{display:flex;align-items:center;justify-content:space-between;gap:8px}.badge{background:var(--mint);border-radius:18px;padding:3px 9px;color:var(--green);font-size:12px}.mapview{position:relative;background:#e7eee7;border-block:1px solid var(--line)}canvas{width:100%;aspect-ratio:1.92;display:block;cursor:crosshair;touch-action:pan-y}.maplegend{font-size:11px;position:absolute;bottom:7px;left:9px;color:#3b564c;background:#f9fcf6e8;padding:4px 7px;border-radius:7px;pointer-events:none}.waterdot,.catchdot{display:inline-block;width:10px;height:6px;background:#75afbd;border-radius:4px;vertical-align:middle;margin-right:3px}.catchdot{background:#639879;margin-left:8px}.timeline{padding:10px 15px;flex-wrap:wrap}.timeline input{accent-color:var(--green);flex:1;min-width:56px}.timeline output,.number{font:600 13px var(--num);font-variant-numeric:tabular-nums}.pathnote{font-size:12px;color:var(--soft);margin:0 15px 10px}
+.alloc{padding:15px}.accent{color:var(--green);font-weight:650}.hint{font-size:13px;color:var(--soft);margin-top:3px}.parcels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:12px 0}.picker{font-size:12px;min-width:0;padding:5px 1px;display:grid;gap:3px;place-items:center;font-weight:550}.picker em{font:600 15px var(--num);font-style:normal}.picker[aria-pressed=true]{color:var(--green);background:var(--mint);border-color:var(--green)}.scheme{padding:12px;background:#f5f8f4;border-radius:9px}.scheme h3{font-size:15px}.scheme p{font-size:12px;color:var(--soft);margin:4px 0 7px}.pt-controls{justify-content:flex-start}.pt-controls output{min-width:56px;text-align:center;font-size:14px;font-weight:650;font-variant-numeric:tabular-nums}.smallbtn{font-size:18px;line-height:1.1;padding:3px 12px}.budgetline{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap;margin:12px 0 4px}.budgetline #budget{color:var(--ochre);font-size:13px;font-weight:650}.budget-dots{display:flex;gap:4px}.budget-dots span{background:#dce6dc;width:13px;height:7px;border-radius:3px}.budget-dots .used{background:#638a76}.foot-controls{margin:4px 0 7px;justify-content:flex-start;gap:14px}.foot-controls button{font-size:12px;min-height:28px}.primary{background:var(--green);color:#fff;min-height:42px;font-size:14px;width:100%}.primary:hover:enabled{background:#194a3e}.secondary{margin:8px 0 0;width:100%;min-height:38px}.message{margin-top:10px;padding:9px 11px;border-radius:8px;background:var(--mint);color:#285745;font-size:13px}.message.loss{background:#f6eedf;color:#745223}.message b{display:block;font-size:16px}.message small{font-size:12px}.targetbox{color:var(--soft);margin:8px 0 0;font-size:12px}.targetbox strong{color:var(--ink);font-weight:600}
+.details{margin-top:15px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:15px;align-items:stretch}.details .panel{padding:15px 16px}.measure-table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;margin-top:8px;font-size:13px}.measure-table th,.measure-table td{padding:4px 3px;text-align:right;white-space:nowrap}.measure-table th{color:var(--soft);font-size:12px;font-weight:550}.measure-table th:first-child,.measure-table td:first-child{text-align:left}.measure-table td{border-top:1px solid #e7ece7}.measure-table tr.focused td{background:#edf4ee}.measure-table .pool{color:#28697f;font-weight:650}.measure-table .held{color:#357051}.graph{width:100%;height:86px;display:block;margin:5px 0}.keys{display:flex;gap:12px;flex-wrap:wrap;color:var(--soft);font-size:11px}.keys span:before{content:"";display:inline-block;width:15px;border-top:2px solid var(--blue);vertical-align:middle;margin-right:4px}.keys .opp:before{border-color:#aa7a41;border-top-style:dashed}.keys .unbuilt:before{border-color:#97a29b;border-top-style:dotted}.pair{display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;margin-top:6px}.pair small{display:block;color:var(--soft);font-size:12px}.pair b{font:600 23px var(--num)}.notes{color:var(--soft);font-size:12px;margin-top:8px}.tagline{font-size:12px;color:var(--soft);margin-top:10px}
+dialog{max-width:min(460px,92vw);border:1px solid var(--line);border-radius:13px;padding:20px;color:var(--ink);background:#fff}dialog::backdrop{background:#26392fb0}dialog li{margin:6px 0}dialog ol{padding-left:22px;color:var(--soft)}
+@media(max-width:930px){.intro{align-items:flex-start;flex-direction:column;gap:9px}.inside,main{width:calc(100% - 28px)}.board{grid-template-columns:minmax(0,1.55fr) minmax(265px,.9fr);gap:10px}.alloc,.details .panel{padding:12px}.details{gap:10px}}
+@media(max-width:720px){main{padding-top:13px}.board,.details{grid-template-columns:1fr}.details{margin-top:10px}.maplegend{display:none}.alloc .parcels{margin:8px 0}.inside{min-height:49px}.brand{font-size:18px}.intro h1{font-size:27px}.scheme{padding:9px}.budgetline{margin-top:8px}.tagline{font-size:11px}}
+@media(max-width:390px){.inside,main{width:calc(100% - 16px)}.setting{gap:4px}.storm,.mode{font-size:12px;padding:4px 5px}.intro p{font-size:13px}.pad,.timeline{padding:10px}.details .panel{padding:10px}.measure-table th{font-size:11px}}
+</style></head>
+<body><header class="head"><div class="inside"><div class="brand"><svg aria-hidden="true" viewBox="0 0 32 32"><rect x="0" y="0" width="32" height="32" rx="9" fill="#265b4d"/><path d="m12 6-6 9m14-9L8 24m20-19L14 26m13-13-7 10" stroke="#e7f1e7" stroke-linecap="round" stroke-width="2" fill="none"/></svg>雨落街角</div><button class="line-btn" id="help">玩法说明</button></div></header>
+<main><div class="intro"><div><h1>别让站台积水</h1><p>沿水路为五处地块分配全部 5 点，争取更低的车站积水峰值。</p></div><div class="setting"><div id="modes" class="pillset" role="group" aria-label="选择模式"><button class="mode" data-mode="solo">单人挑战</button><button class="mode" data-mode="duo">双人对战</button></div><div class="pillset" id="storms" role="group" aria-label="选择雨型"></div></div></div>
+<div class="board"><section class="panel"><div class="pad map-title"><h2>河湾街区</h2><span id="map-state" class="badge"></span></div><div class="mapview"><canvas id="scene" aria-label="河湾街区。可点击地图选中地块，也可用改造方案中的五个地块按钮。"></canvas><span class="maplegend"><i class="waterdot"></i>地面积水<i class="catchdot"></i>拦水或增排</span></div>
+<div class="timeline"><button class="line-btn" id="replay">播放</button><label class="small" for="scrub">雨程</label><input type="range" id="scrub" min="1" max="14" value="1"><output for="scrub" id="step"></output></div>
+<p class="pathnote">学校 → 公园 → 车站　｜　集市 → 居民区 → 车站　｜　车站 → 排水口</p></section>
+<section class="panel alloc"><div class="turn-head"><h2 id="turn">我的改造方案</h2><span class="small" id="round-state"></span></div><p class="hint">选一处地块，再调整它的改造点数。</p>
+<div id="sites" class="parcels" role="group" aria-label="选择地块"></div><div class="scheme"><h3 id="site-name"></h3><p id="site-desc"></p><div class="pt-controls"><button id="minus" class="smallbtn" aria-label="减少所选地块一点">−</button><output id="points"></output><button id="plus" class="smallbtn" aria-label="增加所选地块一点">＋</button></div></div>
+<div class="budgetline"><span id="budget" aria-live="polite"></span><span class="budget-dots" aria-hidden="true"></span></div><div class="foot-controls"><button id="undo" class="link-btn">↶ 撤销</button><button id="clear" class="link-btn">收回全部点数</button></div><button id="run" class="primary">开始试雨</button>
+<button id="lock" class="primary secondary" hidden>确认并锁定玩家 1 方案</button><div id="verdict" class="message" role="status" aria-live="polite" hidden></div><button id="again" class="line-btn secondary" hidden>再来一局</button>
+<div class="targetbox"><span id="target-label"></span> <strong id="target"></strong></div></section></div>
+<div class="details"><section class="panel"><div class="row-between"><h2>雨水去哪了</h2><span id="frame-label" class="small"></span></div><table class="measure-table" id="site-table"><thead><tr><th scope="col">地块</th><th scope="col">上游来水</th><th scope="col">拦水/增排</th><th scope="col">流出</th><th scope="col">积水</th></tr></thead><tbody></tbody></table><p class="notes" id="frame-note"></p></section>
+<section class="panel"><div class="row-between"><h2>站前积水复盘</h2><span class="small">越低越好</span></div><div class="pair"><div><small id="reference-caption"></small><b id="score-ref">—</b> 格</div><div><small id="score-caption">我的峰值</small><b id="score-current">—</b> 格</div></div><svg id="curve" viewBox="0 0 500 85" preserveAspectRatio="none" role="img" aria-label="车站积水随时间变化曲线" class="graph"></svg><div class="keys"><span id="key-ref" class="opp"></span><span hidden id="key-mine"></span><span class="unbuilt" id="key-original" hidden>未改造</span></div><p class="notes" id="summary"></p></section></div>
+<p class="tagline">格为本沙盘的模拟水量单位。每种雨型固定重放，双方使用相同的街区与预算。</p>
+</main><dialog id="helpbox" aria-labelledby="help-title"><h2 id="help-title">怎么玩</h2><ol><li>把 5 点分给学校、集市、公园、居民区和车站。每处可以分 0 到 5 点，更高等级会加强本地的拦水或下渗能力。</li><li>点数用完即可正式试雨。地图和逐步水量表会同步显示水往哪流、当地设施截住多少、哪里还有积水。</li><li>单人挑战中，车站峰值严格低于预设方案即胜。平局算本次挑战未胜。</li><li>双人对战中，玩家 1 先试雨并确认方案。玩家 2 用相同的雨型重新分配 5 点，成绩低于玩家 1 才获胜。两人打平归玩家 1。</li><li>计胜时比较屏幕显示的一位小数成绩。拖动时间轴可以复盘每一步。</li></ol><form method="dialog"><button class="primary">回到街区</button></form></dialog>
+<script>
+/* Stand-alone exhibition model. Renderers consume snapshots and never mutate simulation state. */
+(() => {
+  'use strict';
+  const budget = 5;
+  const sites = [
+    {id:'school', name:'学校上坡', short:'学校', base:'硬质操场', project:'透水操场', downstream:2, area:1.05, runoff:.94, transfer:.72, seep:.56, capacity:0, intake:0, soak:0, outlet:0,
+     description:'将径流从操场渗入地下，余水流向公园。', levelEffect:'每点每步新增 0.56 格地表下渗。'},
+    {id:'market', name:'集市广场', short:'集市', base:'硬质广场', project:'地下蓄水池', downstream:3, area:1.14, runoff:.95, transfer:.70, seep:0, capacity:3.5, intake:1.34, soak:0, outlet:0,
+     description:'截住广场上的雨水暂存在池内，溢流进入居民区。', levelEffect:'每点新增 3.5 格容量，每步最多接纳 1.34 格。'},
+    {id:'park', name:'街心公园', short:'公园', base:'公园草坪', project:'下凹绿地', downstream:4, area:.80, runoff:.55, transfer:.64, seep:.12, capacity:2.2, intake:.86, soak:.34, outlet:0,
+     description:'接收学校来水，绿地下凹处先蓄水，随后缓慢下渗。', levelEffect:'每点新增 2.2 格容量、每步 0.86 格接纳能力，另增强下渗。'},
+    {id:'homes', name:'居民区', short:'居民区', base:'小区街巷', project:'植草沟', downstream:4, area:.91, runoff:.77, transfer:.61, seep:.39, capacity:1.15, intake:.58, soak:.24, outlet:0,
+     description:'集市与街巷来水经过草沟，一部分渗入地下，其余流向车站。', levelEffect:'每点每步新增 0.39 格地表下渗，另增加 1.15 格暂存空间。'},
+    {id:'stop', name:'低洼车站', short:'车站', base:'站前低地', project:'站前排水口', downstream:null, area:.64, runoff:.76, transfer:0, seep:0, capacity:0, intake:0, soak:0, outlet:.52,
+     description:'公园和居民区的水在此汇合。基础排水口每步最多排出 5 格。', levelEffect:'每点每步新增 0.52 格外排能力。'}
+  ].map(s => Object.freeze({...s,desc:s.description}));
+  const storms = [
+    {id:'storm1', name:'放学阵雨', description:'逐渐增强再回落的阵雨，共 31 格单位面积降雨。', pulses:[1,2,4,6,7,5,3,2,1,0,0,0,0,0]},
+    {id:'storm2', name:'短时强降雨', description:'相同总雨量集中在短时间内到达，两步内落下 23 格。', pulses:[0,0,0,1,3,14,9,3,1,0,0,0,0,0]}
+  ];
+  const baselinePlan = Object.freeze([1,1,1,1,1]);
+  const values = () => sites.map(() => 0);
+  function spent(plan) {
+    if (!Array.isArray(plan) || plan.length !== sites.length) throw new TypeError('需要为五个地块分配点数。');
+    let total = 0;
+    for (const level of plan) {
+      if (!Number.isInteger(level) || level < 0 || level > budget) throw new RangeError('各地块只能使用 0 到 5 的整数点。');
+      total += level;
+    }
+    return total;
+  }
+  function score(peak) {
+    if (!Number.isFinite(peak) || peak < 0) throw new RangeError('峰值须为非负有限数。');
+    return Math.round(peak * 10) / 10;
+  }
+  function rank(first, second) {
+    return score(first.peak) <= score(second.peak) ? 'first' : 'second';
+  }
+  function simulate(plan, stormId = 'storm1', options = {}) {
+    const total = spent(plan);
+    if (total > budget || (total !== budget && !options.preview)) throw new RangeError('正式试雨须用完 5 点预算。');
+    const storm = storms.find(s => s.id === stormId);
+    if (!storm) throw new RangeError('未知的降雨过程。');
+    const water = values(), store = values(), peakSite = values(), frames = [];
+    let input = 0, drained = 0, infiltrated = 0, peakFrame = 0;
+    for (const rain of storm.pulses) {
+      const flow = values(), inflow = values(), captured = values();
+      const rainOnSite = values(), baseSeep = values(), directSeep = values(), storeSeep = values();
+      let outletThisStep = 0;
+      for (let i=0; i<sites.length; i++) {
+        const s = sites[i], level = plan[i];
+        rainOnSite[i] = s.area * rain;
+        input += rainOnSite[i];
+        const runoff = rainOnSite[i] * s.runoff;
+        baseSeep[i] = rainOnSite[i] - runoff;
+        infiltrated += baseSeep[i];
+        water[i] += runoff;
+        // Previously stored water seeps first, freeing capacity for this step.
+        const storedSeep = Math.min(store[i], s.soak * level);
+        store[i] -= storedSeep;
+        const surfaceSeep = Math.min(water[i], s.seep * level);
+        directSeep[i] = surfaceSeep;
+        storeSeep[i] = storedSeep;
+        water[i] -= surfaceSeep;
+        infiltrated += storedSeep + surfaceSeep;
+        const stored = Math.min(water[i], s.intake * level, Math.max(0, s.capacity * level - store[i]));
+        water[i] -= stored;
+        store[i] += stored;
+        captured[i] = surfaceSeep + stored;
+        if (s.downstream !== null) {
+          flow[i] = water[i] * s.transfer;
+          water[i] -= flow[i];
+          water[s.downstream] += flow[i];
+          inflow[s.downstream] += flow[i];
+        } else {
+          outletThisStep = Math.min(water[i], 5 + s.outlet * level);
+          captured[i] = Math.max(0, outletThisStep - 5);
+          drained += outletThisStep;
+          water[i] -= outletThisStep;
+        }
+      }
+      if (water[4] > peakSite[4]) peakFrame = frames.length;
+      for (let i=0; i<sites.length; i++) peakSite[i] = Math.max(peakSite[i],water[i]);
+      frames.push({rain,rainOnSite,water:[...water],store:[...store],flow,inflow,captured,baseSeep,directSeep,storeSeep,outletThisStep,input,drained,infiltrated});
+    }
+    return {peak:peakSite[4],peakFrame,peakSite,score:score(peakSite[4]),frames,input,drained,infiltrated};
+  }
+  storms.forEach(s => {Object.freeze(s.pulses); Object.freeze(s)});
+  window.RainEngine = Object.freeze({sites:Object.freeze(sites),storms:Object.freeze(storms),budget,baselinePlan,simulate,spent,rank,score});
+})();
+
+</script>
+<script>
+/* Isometric map of the five drainage areas. World coordinates are in block units. */
+window.RainScene = function RainScene(canvas, onSelect) {
+  const ctx=canvas.getContext('2d');
+  const W=920,H=480;
+  const sites=[
+    {name:'学校上坡',x:.25,y:.25,w:7,d:4.75,label:[329,36],anchor:[1.45,.98,2.4],wet:[4.12,4.31],bed:[5.0,2.54,1.98,1.99]},
+    {name:'集市广场',x:9.35,y:.3,w:7.25,d:4.7,label:[810,157],anchor:[14.65,1.14,1.22],wet:[12.52,4.15],bed:[13.59,3.00,2.47,1.47]},
+    {name:'街心公园',x:.32,y:6.38,w:6.87,d:4.22,label:[139,160],anchor:[1.08,8.32,.74],wet:[3.73,9.20],bed:[4.34,8.35,2.35,1.83]},
+    {name:'沿街居民区',x:9.35,y:6.38,w:7.15,d:4.23,label:[765,316],anchor:[15.57,7.82,1.04],wet:[11.75,9.89],bed:[12.39,9.38,3.71,.9]},
+    {name:'低洼车站',x:6.18,y:12.28,w:7.90,d:3.66,label:[268,435],anchor:[7.54,15.1,.49],wet:[10.04,14.27],bed:[11.16,14.62,2.4,.8]}
+  ];
+  const waterPaths=[
+    [[6.05,4.80],[6.05,5.65],[5.85,6.7]],
+    [[15.24,4.78],[15.13,5.60],[14.94,6.73]],
+    [[6.5,10.04],[7.39,11.36],[8.12,12.65]],
+    [[12.83,10.22],[12.41,11.36],[11.38,12.72]]
+  ];
+  const stateVector=()=>[0,0,0,0,0];
+  let view={plan:stateVector(),selected:0,water:stateVector(),store:stateVector(),flow:stateVector(),captured:stateVector(),inflow:stateVector(),rain:0,time:0,playing:false};
+  let hits=[],labels=[],tallHits=[],narrow=false,scale=1,left=0,topOffset=0;
+  function iso(x,y,z=0){return [445+(x-y)*25,60+(x+y)*12.55-z*24];}
+  function polygon(points, fill, stroke, width=1) {
+    ctx.beginPath();
+    points.forEach(([x,y],i)=>i ? ctx.lineTo(x,y) : ctx.moveTo(x,y));
+    ctx.closePath();
+    if(fill){ctx.fillStyle=fill;ctx.fill();}
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}
+  }
+  function line(points, color, width=1, dashes=[]) {
+    ctx.beginPath(); points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));
+    ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dashes);ctx.stroke();ctx.setLineDash([]);
+  }
+  function quad(x,y,w,d,z=0) {return [iso(x,y,z),iso(x+w,y,z),iso(x+w,y+d,z),iso(x,y+d,z)];}
+  function tile(x,y,w,d,z,fill,stroke) { polygon(quad(x,y,w,d,z),fill,stroke); }
+  function block(x,y,w,d,base,h,top,front,side) {
+    const z=base+h;
+    polygon([iso(x,y+d,z),iso(x+w,y+d,z),iso(x+w,y+d,base),iso(x,y+d,base)],front);
+    polygon([iso(x+w,y,z),iso(x+w,y+d,z),iso(x+w,y+d,base),iso(x+w,y,base)],side);
+    tile(x,y,w,d,z,top);
+  }
+  function oval(x,y,rx,ry,fill,stroke,width=1) {
+    ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);
+    if(fill){ctx.fillStyle=fill;ctx.fill();}
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}
+  }
+  function shadow(x,y,w,d,h) {
+    const q=quad(x,y,w,d,.21);
+    polygon([q[3],q[2],q[1],[q[1][0]+h,q[1][1]+h*.28],[q[2][0]+h,q[2][1]+h*.28],[q[3][0]+h,q[3][1]+h*.28]],'rgba(55,81,76,.15)');
+  }
+  function tree(x,y,size=1,round=true) {
+    const [u,v]=iso(x,y,.28);
+    oval(u+size*5,v+size*1.3,size*10,size*3.2,'rgba(53,86,75,.17)');
+    line([[u,v],[u,v-20*size]],'#827e68',2.8*size);
+    if(round) {
+      oval(u,v-19*size,10.6*size,14*size,'#588273');
+      oval(u-2.8*size,v-23*size,8.4*size,10.1*size,'#73a08a');
+      oval(u-4.2*size,v-25.6*size,5.4*size,5.8*size,'#91b49a');
+    } else {
+      polygon([[u,v-39*size],[u+10.2*size,v-11*size],[u+1.7*size,v-7*size],[u-9*size,v-13*size]],'#537c70');
+      polygon([[u,v-39*size],[u+.6*size,v-9*size],[u-9*size,v-13*size]],'#80a58e');
+    }
+  }
+  function facadeWindow(x,y,z,w,h,side=false) {
+    const edge=(dx,dz)=>side?iso(x,y+dx,z+dz):iso(x+dx,y,z+dz);
+    polygon([edge(0,0),edge(w,0),edge(w,h),edge(0,h)],side?'#68838a':'#6b8e96');
+    line([edge(w*.45,.03),edge(w*.45,h-.02)],'#c3dad4',.85);
+    line([edge(0,h*.67),edge(w,h*.67)],'#c3dad4',.65);
+    line([edge(-.035,-.025),edge(w+.035,-.025)],'#d6d8c9',1.4);
+  }
+  function school() {
+    const x=.95,y=.85,w=4.25,d=1.92,h=2.06;
+    shadow(x,y,w,d,16);
+    block(x,y,w,d,.28,h,'#849a98','#e3d8bd','#bec4ad');
+    tile(x+.18,y+.15,w-.36,d-.30,h+.29,'#8ea19c');
+    block(x-.1,y-.1,w+.2,d+.2,h+.29,.10,'#a9b6aa','#8d9e92','#7b938b');
+    block(x+.45,y+.25,.9,.54,h+.4,.23,'#cbd1bb','#a6b6a8','#8ea294');
+    for(let i=0;i<6;i++) for(const z of [.70,1.54])facadeWindow(x+.23+i*.66,y+d+.015,z,.40,.46);
+    for(let i=0;i<3;i++)for(const z of [.70,1.53])facadeWindow(x+w+.012,y+.15+i*.57,z,.32,.45,true);
+    block(1.35,2.94,1.8,.93,.28,1.02,'#8caaa7','#e4dcc5','#b9c4b1');
+    facadeWindow(1.60,3.875,.29,.4,.72);facadeWindow(2.22,3.875,.29,.39,.72);
+    tile(1.27,3.95,2.0,.34,.3,'#c3c7b6');
+    for(let k=0;k<2;k++)tree(.82+k*.62,4.2,.7+k*.08);
+    tree(6.55,.73,.81,false);
+  }
+  function stall(x,y,color,pale) {
+    shadow(x,y,.98,.81,6);
+    block(x+.08,y+.08,.81,.62,.28,.47,'#d2c8ab','#bfad8c','#a69e81');
+    for(const dx of [.04,.94]) for(const dy of [.05,.73])
+      line([iso(x+dx,y+dy,.28),iso(x+dx,y+dy,1.24)],'#8c846e',1.7);
+    for(let j=0;j<5;j++){
+      const xx=x-.1+j*.24, c=j%2?pale:color;
+      polygon([iso(xx,y-.14,1.2),iso(xx+.24,y-.14,1.2),iso(xx+.24,y+.4,1.48),iso(xx,y+.4,1.48)], j%2?pale:color);
+      polygon([iso(xx,y+.4,1.48),iso(xx+.24,y+.4,1.48),iso(xx+.24,y+.91,1.18),iso(xx,y+.91,1.18)],c);
+      polygon([iso(xx,y+.91,1.18),iso(xx+.24,y+.91,1.18),iso(xx+.24,y+.91,1.06),iso(xx,y+.91,1.06)],j%2?'#d2cdac':'#b58369');
+    }
+  }
+  function market() {
+    for(let j=0;j<8;j++)line([iso(9.55+j*.89,.58,.25),iso(9.55+j*.89,4.68,.25)],'#c9cec1',.8);
+    stall(10.5,1.18,'#ce9e85','#eadcbb');stall(12.15,1.18,'#80a3a1','#dde2c9');stall(13.8,1.18,'#cfaa83','#ebe2c2');
+    block(10.38,3.12,1.45,.48,.27,.48,'#ceb993','#ad9679','#978f75');
+    for(let i=0;i<4;i++)tree(12.7+i*.77,.65,i%2?.44:.50);
+  }
+  function busStop() {
+    tile(8.1,7.65,5.12,2.19,.28,'#bbc8c0','#a5b7ac');
+    const x=9.02, y=8.24;
+    shadow(x,y,2.85,.83,9);
+    for(const dx of [0,1.39,2.77])line([iso(x+dx,y,.34),iso(x+dx,y,1.70)],'#688883',2.6);
+    polygon([iso(x,y,.51),iso(x+2.76,y,.51),iso(x+2.76,y,1.64),iso(x,y,1.64)],'rgba(124,169,174,.48)','#789f9e',1);
+    block(x+.2,y+.25,2.12,.30,.35,.28,'#c59d78','#a58a6e','#987d62');
+    block(x-.16,y-.14,3.12,1.08,1.70,.13,'#6e9399','#55767b','#456971');
+    tile(x+.05,y+.02,2.74,.76,1.84,'#8aa5a5');
+    const [u,v]=iso(12.53,8.90,.32);line([[u,v],[u,v-30]],'#728a80',2.4);
+    ctx.fillStyle='#3c756f';ctx.fillRect(u-4,v-33,8,9);ctx.fillStyle='#e5eee1';ctx.fillRect(u-2,v-30.5,4,2);
+    tree(15.85,7.78,.66);
+  }
+  function park(){
+    tile(.58,6.63,6.34,3.72,.27,'#bbd1ae');
+    tile(1.01,8.10,5.94,.45,.29,'#d8cfae');
+    tile(2.39,7.24,.62,2.74,.3,'#d7ccb0');
+    const x=2.05,y=7.13,w=1.68,d=1.18;
+    block(x-.15,y-.13,w+.30,d+.26,.29,.18,'#d4cbb6','#aea990','#a4a58f');
+    for(const dx of [.03,w-.03])for(const dy of [.03,d-.03])
+      line([iso(x+dx,y+dy,.43),iso(x+dx,y+dy,1.42)],'#8b7f67',2.8);
+    const roof=quad(x-.31,y-.29,w+.62,d+.58,1.46),tip=iso(x+w*.50,y+d*.50,2.08);
+    ['#6c8982','#607d78','#55746f','#839b8a'].forEach((color,i)=>polygon([roof[i],roof[(i+1)%4],tip],color));
+    for(let k=0;k<4;k++)line([roof[k],tip],'#a2b39b',.65);
+    const [u,v]=tip;line([[u,v],[u,v-3]],'#7a8271',1.6);
+    for(const [tx,ty,size,round] of [[.85,7.28,.79,false],[1.13,7.79,.58,true],[.91,9.40,.82,true],[1.59,9.89,.65,true],[5.63,6.94,.58,false]])tree(tx,ty,size,round);
+    block(3.62,9.5,.89,.21,.29,.26,'#bf9977','#ac8c6e','#977f65');
+  }
+  function house(x,y,w,d,h,roofColor){
+    shadow(x,y,w,d,9);
+    block(x,y,w,d,.28,h,'#b7b7a6','#ddd0b4','#bcbca7');
+    const z=.28+h,rise=.46,l=iso(x-.12,y+d*.5,z+rise),r=iso(x+w+.12,y+d*.5,z+rise);
+    polygon([iso(x-.13,y-.12,z),iso(x+w+.13,y-.12,z),r,l],roofColor);
+    polygon([l,r,iso(x+w+.13,y+d+.12,z),iso(x-.13,y+d+.12,z)],'#aa856f');
+    polygon([iso(x+w,y,z),r,iso(x+w,y+d,z)],'#cfbca4');
+    line([l,r],'#e3c0a3',1.25);
+    for(const dz of [.62,1.31].filter(n=>n<h))
+      for(let j=0;j<3;j++)facadeWindow(x+.16+j*(w-.15)/3,y+d+.012,dz,.27,.33);
+    facadeWindow(x+w+.012,y+d*.36,.60,.27,.37,true);
+    block(x+.24,y+d+.01,.51,.15,.28,.67,'#9aafaa','#748783','#83988c');
+  }
+  function homes(){
+    tile(9.71,8.94,6.4,.48,.27,'#d6d4bd');
+    house(9.94,6.84,1.65,1.37,1.58,'#c9a689');
+    house(12.00,6.76,1.88,1.42,1.82,'#c6a28b');
+    house(14.44,7.21,1.25,1.15,1.18,'#b99580');
+    tree(10.14,8.91,.63);tree(15.67,9.01,.58);
+  }
+  function station(){
+    // Reuse the shelter from the north-facing street block at its new downstream site.
+    const [x0,y0]=iso(0,0),[x1,y1]=iso(-2.02,4.70);
+    ctx.save();ctx.translate(x1-x0,y1-y0);busStop();ctx.restore();
+  }
+  function magnitude(key,i){
+    const n=Number(view[key]?.[i]);return Number.isFinite(n)?Math.max(0,n):0;
+  }
+  function clock(){return Number(view.time)||0;}
+  function facility(i){
+    const rank=Math.max(0,Math.min(5,Math.floor(magnitude('plan',i))));
+    const [x,y,w,d]=sites[i].bed;
+    const saved=magnitude('store',i),capture=magnitude('captured',i);
+    const strength=saved/(saved+7),c=.31;
+    if(i===0){
+      tile(x,y,w,d,c,rank?'#88a7a0':'#c1a48b','#98a798');
+      polygon(quad(x+.12,y+.11,w-.24,d-.22,c+.02),null,'#ede9d2',.85);
+      line([iso(x+w*.50,y+.12,c+.02),iso(x+w*.50,y+d-.12,c+.02)],'#f0ead1',.8);
+      for(let j=0;j<rank;j++)tile(x+.16+j*.34,y+.17,.14,d-.34,c+.025,'#628e89');
+    }else if(i===1&&rank){
+      // Only access hatches and a water-level window are visible above ground.
+      tile(x,y,w,d,c,'#a3b6af','#76938d');
+      for(let j=0;j<rank;j++) {
+        const [u,v]=iso(x+.30+j*.41,y+.47,c+.05);
+        oval(u,v,5.8,2.7,'#72928e','#cee0d5',.75);
+      }
+      tile(x+.25,y+.9,w-.48,.27,c+.04,'#637f81');
+      if(strength>0)tile(x+.27,y+.92,(w-.52)*strength,.22,c+.05,'#8dd0d4');
+    }else if(i===2&&rank){
+      tile(x,y,w,d,c,'#9bb391','#7c9b82');
+      tile(x+.13,y+.14,w-.26,d-.28,c+.012,'#83a486');
+      tile(x+.28,y+.29,w-.56,d-.58,c+.02,saved>.05?'#83b6ab':'#99ba91');
+      for(let j=0;j<rank;j++)tree(x+.25+j*.39,y+.23+(j%2)*.17,.23);
+    }else if(i===3&&rank){
+      tile(x,y,w,d,c,'#a1bd99','#7b9d86');
+      tile(x+.15,y+.24,w-.30,.34,c+.02,saved>.05?'#79aba2':'#83a780');
+      for(let j=0;j<rank;j++)for(let k=0;k<2;k++){
+        const [u,v]=iso(x+.32+j*.64+k*.18,y+.59,c+.06);
+        line([[u-2.5,v+.8],[u,v-3.3],[u+1.5,v]],'#577f67',1.15);
+      }
+    }else if(i===4){
+      const sw=.76+rank*.30;
+      tile(x,y,sw,d,c,'#738b86','#b4c3ac');
+      for(let j=1;j<=3+rank;j++)tile(x+j*sw/(4+rank),y+.10,.04,d-.20,c+.02,'#b0beb4');
+    }
+    if(capture>.03&&rank){
+      const [u,v]=iso(x+w*.57,y+d*.55,c+.1);
+      const f=view.playing?(clock()*.00085)%1:.65;
+      const extent=6+Math.min(13,capture*1.4);
+      oval(u,v,extent*(.58+f*.58),extent*.35*(.58+f*.58),null,'rgba(36,118,123,.76)',1.4);
+      line([[u,v-9],[u,v-.8],[u-3.1,v-3.4]],'#408f8a',1.35);
+    }
+  }
+  function flood(i){
+    const n=magnitude('water',i);if(n<.025)return;
+    const [ux,uy]=sites[i].wet,[u,v]=iso(ux,uy,.31),big=i===4;
+    const f=n/(n+(big?26:9)),rx=(big?3:2)+f*(big?82:36),ry=rx*(big?.31:.28);
+    oval(u,v,rx,ry,'rgba(62,142,168,'+(.18+.42*f)+')','#79acb7',.85);
+    const incoming=magnitude('inflow',i);
+    const phase=view.playing?(clock()*.0006+i*.19)%1:.56;
+    if(n>.25){
+      const span=.40+.42*phase;
+      ctx.beginPath();ctx.ellipse(u-rx*.10,v+ry*.02,rx*span,ry*span*.85,0,.11*Math.PI,.84*Math.PI);
+      ctx.strokeStyle='rgba(225,244,240,'+(.35+.34*(incoming/(incoming+3)))+')';ctx.lineWidth=1.2;ctx.stroke();
+    }
+  }
+  function route(path,rate,accent=false){
+    const points=path.map(([x,y])=>iso(x,y,.34)),active=rate>.035;
+    const weight=Math.min(1,Math.sqrt(rate)/3.5),color=active?'#358491':accent?'#8daca1':'#79a79f';
+    line(points,color,active?1.7+weight*2:1.35,active?[]:[4,4]);
+    const lenses=points.slice(1).map((p,i)=>Math.hypot(p[0]-points[i][0],p[1]-points[i][1]));
+    const sum=lenses.reduce((a,b)=>a+b,0);
+    function arrow(fraction,fill){
+      let distance=fraction*sum,j=0;
+      while(j<lenses.length-1&&distance>lenses[j]){distance-=lenses[j];j++;}
+      const a=points[j],b=points[j+1],f=distance/lenses[j],u=a[0]+(b[0]-a[0])*f,v=a[1]+(b[1]-a[1])*f;
+      const angle=Math.atan2(b[1]-a[1],b[0]-a[0]),size=active?7+2*weight:6.5;
+      polygon([[u,v],[u-size*Math.cos(angle-.47),v-size*Math.sin(angle-.47)],[u-size*Math.cos(angle+.47),v-size*Math.sin(angle+.47)]],fill);
+    }
+    arrow(.91,color);
+    if(view.playing&&active)arrow(.14+(clock()*.00046%1)*.63,'#b8e3df');
+  }
+  function terrain(){
+    const boundary=[[0,0],[17.0,0],[17,11.18],[14.45,11.18],[14.45,16.38],[5.77,16.38],[5.77,11.18],[0,11.18]];
+    const ground=boundary.map(p=>iso(...p,.23));
+    for(let k=0;k<boundary.length;k++){
+      const a=boundary[k],b=boundary[(k+1)%boundary.length];
+      if(b[0]<a[0]||b[1]>a[1])polygon([iso(...a,.23),iso(...b,.23),iso(...b,-.30),iso(...a,-.30)],b[0]<a[0]?'#a4b49f':'#90a798');
+    }
+    polygon(ground,'#cbd7c2');
+    tile(.08,5.12,16.82,1.12,.24,'#9dadaa');tile(7.45,.07,1.67,11.02,.24,'#9dadaa');
+    tile(6.0,10.84,8.14,1.17,.24,'#a6b5b1');
+    for(let i=0;i<17;i++)if(i!==7&&i!==8)tile(i+.24,5.65,.44,.05,.25,'#dfe5d8');
+    for(let i=0;i<11;i++)if(i!==5)tile(8.25,i+.22,.05,.48,.25,'#dfe5d8');
+    for(let k=0;k<6;k++){tile(9.33+k*.15,5.28,.075,.81,.255,'#e0e6d8');tile(7.61,6.45+k*.14,1.29,.063,.255,'#e1e6d8');}
+    const colors=['#cad3bb','#dedcca','#c0d1b4','#d3d5c1','#c8d5c6'];
+    hits=sites.map((s,i)=>{
+      const q=quad(s.x,s.y,s.w,s.d,.255);
+      polygon(q,colors[i],i===view.selected?'#488674':'#a2b49f',i===view.selected?2.6:1);
+      return q;
+    });
+    // A pointer hitting a raised roof should select its building even above the footprint.
+    tallHits=[quad(.85,.74,4.52,2.20,2.43),quad(10.25,.92,5.15,1.46,1.50),quad(1.83,6.90,2.15,1.65,1.50),quad(9.78,6.60,6.08,1.75,2.18),quad(6.82,12.7,3.40,1.16,1.75)];
+  }
+  function label(site,i) {
+    const [x,y]=site.label, anchor=iso(...site.anchor), selected=i===view.selected;
+    const w=narrow?55:112,h=narrow?49:30;
+    const lx=x-w/2,ly=y-h/2;
+    line([anchor,[x,y]],selected?'#598d80':'#9bb0a5',1.25);
+    ctx.fillStyle= selected?'#275c53':'#f5f7ef';
+    ctx.strokeStyle=selected?'#275c53':'#abc0b1';ctx.lineWidth=1;
+    ctx.beginPath();ctx.roundRect(lx,ly,w,h,narrow?14:8);ctx.fill();ctx.stroke();
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    if(narrow){ctx.fillStyle=selected?'#f5f8ed':'#41665c';ctx.font='600 31px system-ui';ctx.fillText(String(i+1),x,y+1);}
+    else{
+      oval(lx+15,y,8,8,selected?'#dce9d9':'#d6e3d6');
+      ctx.fillStyle=selected?'#275d55':'#4f7368';ctx.font='bold 11px system-ui';ctx.fillText(String(i+1),lx+15,y+.7);
+      ctx.fillStyle=selected?'#f5f8ed':'#395c51';ctx.font='600 14px "Microsoft YaHei",system-ui,sans-serif';ctx.fillText(site.name,x+9,y+.6);
+    }
+    labels[i]=[lx,ly,w,h];
+  }
+  function paint(){
+    const box=canvas.getBoundingClientRect();
+    if(!box.width||!box.height)return;
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const pw=Math.round(box.width*dpr),ph=Math.round(box.height*dpr);
+    if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph;}
+    narrow=box.width<570;scale=Math.min(box.width/W,box.height/H);left=(box.width-W*scale)*.5;topOffset=(box.height-H*scale)*.5;
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,pw,ph);
+    ctx.fillStyle='#e5ede5';ctx.fillRect(0,0,pw,ph);
+    ctx.setTransform(dpr*scale,0,0,dpr*scale,dpr*left,dpr*topOffset);
+    ctx.lineJoin='round';ctx.lineCap='round';
+    const bg=ctx.createLinearGradient(0,0,W*.64,H);
+    bg.addColorStop(0,'#edf2ea');bg.addColorStop(1,'#e0e9e3');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(111,145,130,.13)';
+    for(let x=11;x<W;x+=22)for(let y=10;y<H;y+=22)ctx.fillRect(x,y,1.25,1.25);
+    const shadow=ctx.createRadialGradient(490,348,16,490,348,355);
+    shadow.addColorStop(0,'rgba(84,109,89,.26)');shadow.addColorStop(1,'rgba(84,109,89,0)');
+    ctx.save();ctx.translate(0,100);ctx.scale(1,.60);ctx.fillStyle=shadow;ctx.fillRect(0,0,W,670);ctx.restore();
+    terrain();
+    // Each pool is drawn from its own surface-water value, independent from tank storage.
+    school();market();park();homes();station();
+    for(let i=0;i<sites.length;i++){flood(i);facility(i);}
+    waterPaths.forEach((path,i)=>route(path,magnitude('flow',i)));
+    if(Number(view.outletThisStep)>.035)route([[12.66,15.09],[12.52,15.79],[12.25,16.27]],Number(view.outletThisStep),true);
+    if(view.playing&&view.rain>0){
+      const f=clock()*.085;
+      const count=Math.min(125,Math.round(view.rain*8));
+      for(let i=0;i<count;i++){
+        const x=95+(83*i+f*.23)%745,y=38+(59*i+f)%360;
+        line([[x,y],[x-3.5,y+7]],'rgba(75,126,148,.46)',1.05);
+      }
+    }
+    sites.forEach(label);
+  }
+  function contains(x,y,points) {
+    let inside=false;
+    for(let i=0,j=points.length-1;i<points.length;j=i++){
+      const a=points[i],b=points[j];
+      if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])inside=!inside;
+    }
+    return inside;
+  }
+  function click(e){
+    const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left-left)/scale,y=(e.clientY-r.top-topOffset)/scale;
+    let i=labels.findIndex(([a,b,w,h])=>x>=a&&x<=a+w&&y>=b&&y<=b+h);
+    if(i<0)i=tallHits.findIndex(q=>contains(x,y,q));
+    if(i<0)i=hits.findIndex(q=>contains(x,y,q));
+    if(i>=0&&typeof onSelect==='function')onSelect(i);
+  }
+  canvas.addEventListener('click',click);
+  const observer=new ResizeObserver(paint);observer.observe(canvas);paint();
+  return {
+    draw(next){view={...view,...next};paint();},
+    destroy(){observer.disconnect();canvas.removeEventListener('click',click);}
+  };
+};
+
+
+</script>
+<script>
+(() => {
+  'use strict';
+  const {sites, storms, budget, simulate, spent, rank, baselinePlan} = window.RainEngine;
+  const el = id => document.getElementById(id);
+  const zeros = () => sites.map(() => 0);
+  const fresh = () => ({points:zeros(), tested:false, first:null});
+  const sessions = {solo:{},duo:{}};
+  for (const track of Object.values(sessions)) for (const s of storms) track[s.id] = fresh();
+  const num = value => Number(value).toFixed(1);
+  let mode='solo', storm=storms[0].id, site=0, history=[];
+  let original, benchmark, result, firstRun, frame=0, running=false, judging=false, animation=0, last=0;
+  const storageKey='rain-corner.five-plots.v1';
+  const s=()=>sessions[mode][storm];
+  const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isP2=()=>mode==='duo'&&Boolean(s().first);
+  const isDone=()=>isP2()&&s().tested;
+  const official=()=>s().tested||judging;
+  const canSee=()=>official()?result:(spent(s().points)===0?original:null);
+  const ref=()=>mode==='solo'?benchmark:(isP2()?firstRun:original);
+  function validPoints(value){try{return spent(value)<=budget}catch{return false}}
+  function restore(){
+    try {
+      const data=JSON.parse(localStorage.getItem(storageKey));if(data?.v!==1)return;
+      for (const m of ['solo','duo'])for (const st of storms){
+        const v=data.sessions?.[m]?.[st.id];if(!v||!validPoints(v.points))continue;
+        sessions[m][st.id]={points:[...v.points],tested:v.tested===true&&spent(v.points)===budget,
+          first:m==='duo'&&validPoints(v.first)&&spent(v.first)===budget?[...v.first]:null};
+      }
+      if(data.mode==='solo'||data.mode==='duo')mode=data.mode;
+      if(storms.some(st=>st.id===data.storm))storm=data.storm;
+    }catch{}
+  }
+  function save(){try{localStorage.setItem(storageKey,JSON.stringify({v:1,mode,storm,sessions}))}catch{}}
+  restore();
+  const map=window.RainScene(el('scene'),selectSite);
+  el('storms').innerHTML=storms.map(st=>'<button type="button" class="storm" data-storm="'+st.id+'">'+st.name+'</button>').join('');
+  el('sites').innerHTML=sites.map((st,i)=>'<button type="button" class="picker" data-site="'+i+'"><span>'+st.short+'</span><em>0</em></button>').join('');
+  el('site-table').tBodies[0].innerHTML=sites.map(st=>'<tr><td>'+st.short+'</td><td>—</td><td class="held">—</td><td>—</td><td class="pool">—</td></tr>').join('');
+  function recalc(){
+    original=simulate(zeros(),storm,{preview:true});benchmark=simulate(baselinePlan,storm);
+    firstRun=s().first?simulate(s().first,storm):null;result=s().tested?simulate(s().points,storm):null;
+    frame=canSee()?.peakFrame??0;
+  }
+  function selectSite(i){site=i;paint()}
+  function updatePlan(next){
+    if(running||judging||isDone()||!validPoints(next)||next.every((n,i)=>n===s().points[i]))return;
+    history.push({points:[...s().points],tested:s().tested});if(history.length>45)history.shift();
+    s().points=next;s().tested=false;recalc();save();paint();
+  }
+  function changeScene(m,id){
+    if(running||judging||(m===mode&&id===storm))return;
+    mode=m;storm=id;site=0;history=[];recalc();save();paint();
+  }
+  const heading=()=>mode==='solo'?'我的改造方案':isP2()?'玩家 2 的方案':'玩家 1 的方案';
+  const mine=()=>mode==='solo'?'我的方案':isP2()?'玩家 2':'玩家 1';
+  const opponent=()=>mode==='solo'?'预设方案':isP2()?'玩家 1':'未改造街区';
+  function verdict(){
+    const box=el('verdict');box.hidden=!s().tested||judging;if(box.hidden){box.textContent='';return}
+    let title,detail,win=true;
+    if(mode==='solo'){
+      win=rank(benchmark,result)==='second';title=win?'挑战成功':(result.score===benchmark.score?'平局，本轮未胜':'本轮未胜');
+      detail='本轮 '+num(result.score)+' 格，预设 '+num(benchmark.score)+' 格。';
+    }else if(!isP2()){
+      title='玩家 1 试雨完成';detail='峰值 '+num(result.score)+' 格。确认后将锁定此成绩，交给玩家 2。';
+    }else{
+      const secondWins=rank(firstRun,result)==='second';
+      title=secondWins?'玩家 2 获胜':'玩家 1 获胜';
+      detail=firstRun.score===result.score?'两人成绩相同，均为 '+num(result.score)+' 格，平局归玩家 1。':'玩家 1 为 '+num(firstRun.score)+' 格，玩家 2 为 '+num(result.score)+' 格。';
+    }
+    box.classList.toggle('loss',!win);box.innerHTML='<b>'+title+'</b><small>'+detail+'</small>';
+  }
+  function graph(){
+    const chart=el('curve'),w=500,h=85,p=5;const reference=ref(),cur=canSee(),n=original.frames.length;
+    const x=i=>p+i*(w-2*p)/(n-1), y=v=>h-p-v*(h-2*p)/(original.peak*1.1);
+    function line(run,color,dash=''){
+      const points=run.frames.map((f,i)=>x(i).toFixed(1)+','+y(f.water[4]).toFixed(1)).join(' ');
+      return '<polyline points="'+points+'" fill="none" stroke="'+color+'" vector-effect="non-scaling-stroke" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="'+dash+'"/>';
+    }
+    let svg='<title>车站每步积水，峰值越低越好</title>';
+    for(const target of [0,original.peak/2,original.peak])svg+='<line x1="0" x2="500" y1="'+y(target)+'" y2="'+y(target)+'" stroke="#e1e8e2" vector-effect="non-scaling-stroke"/>';
+    if(reference!==original)svg+=line(original,'#97a29b','1 5');
+    svg+=line(reference,'#a77a42','5 4');
+    if(official())svg+=line(result,'#397e95');
+    if(cur){const cx=x(frame),cy=y(cur.frames[frame].water[4]);svg+='<line x1="'+cx+'" x2="'+cx+'" y1="0" y2="'+h+'" stroke="#8ca197"/><circle r="3.5" cx="'+cx+'" cy="'+cy+'" fill="#285f52"/>'}
+    chart.innerHTML=svg;
+  }
+  function drawScene(time=0){
+    const snap=canSee()?.frames[frame];
+    map.draw({plan:s().points,selected:site,water:snap?.water??zeros(),store:snap?.store??zeros(),flow:snap?.flow??zeros(),
+      captured:snap?.captured??zeros(),inflow:snap?.inflow??zeros(),rain:snap?.rain??0,time,playing:running});
+  }
+  function displayFrame(time=0){
+    const active=canSee(), snap=active?.frames[frame], shown=Boolean(snap);
+    drawScene(time);
+    el('scrub').value=frame+1;el('step').textContent=shown?(frame+1)+' / '+active.frames.length:'—';
+    el('scrub').setAttribute('aria-valuetext',shown?'第 '+(frame+1)+' 步，车站积水 '+num(snap.water[4])+' 格':'尚未试雨');
+    el('map-state').textContent=shown?((official()?mine():'未改造街区')+' · '+(frame===active.peakFrame?'峰值 ':'车站 ')+num(snap.water[4])+' 格'):'分配预览 · 待试雨';
+    el('frame-label').textContent=shown?'第 '+(frame+1)+' 步 · 单位：格':'等待试雨';
+    Array.from(el('site-table').tBodies[0].rows).forEach((tr,i)=>{
+      tr.classList.toggle('focused',site===i);
+      const values=shown?[snap.inflow[i],snap.captured[i],i===4?snap.outletThisStep:snap.flow[i],snap.water[i]]:null;
+      for(let j=1;j<5;j++)tr.cells[j].textContent=shown?num(values[j-1]):'—';
+    });
+    if(shown){
+      const max=Math.max(...snap.water),idx=snap.water.indexOf(max);
+      let status=max<.05?'本步五处地块均无明显积水。':'本步积水最多在'+sites[idx].name+'，共 '+num(max)+' 格。';
+      const store=snap.store[site];
+      status+=' '+sites[site].short+(site===4?'新增外排 ':'设施截留或下渗 ')+num(snap.captured[site])+' 格';
+      status+=site!==4&&store>.05?'，设施内暂存 '+num(store)+' 格。':'。';
+      el('frame-note').textContent=status;
+    }else el('frame-note').textContent='正式试雨后可以拖动雨程，查看每一步的局部积水与设施效果。';
+    graph();
+  }
+  function paint(){
+    const used=spent(s().points),left=budget-used,locked=running||judging||isDone(),r=ref();
+    document.querySelectorAll('[data-mode]').forEach(b=>{b.disabled=judging||running;b.setAttribute('aria-pressed',String(b.dataset.mode===mode))});
+    document.querySelectorAll('[data-storm]').forEach(b=>{b.disabled=judging||running;b.setAttribute('aria-pressed',String(b.dataset.storm===storm))});
+    document.querySelectorAll('[data-site]').forEach((b,i)=>{b.setAttribute('aria-pressed',String(i===site));b.setAttribute('aria-label',sites[i].name+'，已分配 '+s().points[i]+' 点');b.querySelector('em').textContent=s().points[i]});
+    el('turn').textContent=heading();el('round-state').textContent=mode==='solo'?'单人挑战':isP2()?'第二回合':'第一回合';
+    el('budget').textContent='已分配 '+used+' / '+budget+' 点 · 剩余 '+left+' 点';
+    document.querySelector('.budget-dots').innerHTML=Array.from({length:budget},(_,i)=>'<span class="'+(i<used?'used':'')+'"></span>').join('');
+    const chosen=sites[site];el('site-name').textContent=chosen.name+' · '+chosen.project;el('site-desc').textContent=chosen.levelEffect||chosen.desc;
+    el('points').textContent=s().points[site]+' 点';el('minus').disabled=locked||s().points[site]===0;el('plus').disabled=locked||left===0;
+    el('undo').disabled=locked||history.length===0;el('clear').disabled=locked||used===0;
+    el('run').disabled=locked||left!==0;el('run').textContent=judging?'本轮试雨中…':isDone()?'对战已结束':s().tested?'按同一方案再试雨':'开始试雨';
+    el('lock').hidden=!(mode==='duo'&&!isP2()&&s().tested&&!judging&&!running);
+    el('again').hidden=!s().tested||running||judging||(mode==='duo'&&!isP2());
+    el('target-label').textContent=mode==='solo'?'获胜条件':isP2()?'玩家 2 获胜条件':'本回合目标';
+    el('target').textContent=mode==='solo'?'峰值低于 '+num(r.score)+' 格（五处各 1 点的预设方案）':isP2()?'峰值低于玩家 1 的 '+num(r.score)+' 格':'试雨并确认成绩，供玩家 2 挑战';
+    el('reference-caption').textContent=opponent()+'峰值';el('score-ref').textContent=num(r.score);
+    el('score-caption').textContent=mine()+'峰值';el('score-current').textContent=s().tested?num(result.score):'—';
+    el('key-ref').textContent=opponent();el('key-mine').textContent=mine();el('key-mine').hidden=!official();el('key-original').hidden=r===original;
+    el('summary').textContent=isP2()?'玩家 1 已锁定。其五处点数依次为 '+s().first.join('、')+'。':
+      mode==='solo'?'预设方案使用相同雨型与 5 点预算。胜负按一位小数成绩判定。':'玩家 1 可以在确认前调整方案并重新试雨。';
+    el('replay').textContent=running?'暂停':judging?'继续试雨':'播放';el('replay').disabled=!canSee();
+    el('scrub').disabled=!canSee()||judging;el('scrub').max=original.frames.length;
+    verdict();displayFrame();
+  }
+  function stop(){running=false;cancelAnimationFrame(animation)}
+  function finish(full){
+    stop();const active=canSee();
+    if(judging){s().tested=true;judging=false;save()}
+    if(full&&active)frame=active.peakFrame;
+    paint();
+  }
+  function play(startAtZero){
+    const active=canSee();if(!active)return;
+    stop();if(startAtZero||frame>=active.frames.length-1)frame=0;
+    if(reduced()){finish(true);return}
+    running=true;last=performance.now();paint();let lastPaint=last;
+    function tick(t){
+      if(!running)return;
+      if(t-last>=360){
+        if(frame===active.frames.length-1){finish(true);return}
+        last=t;lastPaint=t;frame++;displayFrame(t);
+      }else if(t-lastPaint>=40){drawScene(t);lastPaint=t}
+      animation=requestAnimationFrame(tick);
+    }
+    animation=requestAnimationFrame(tick);
+  }
+  el('modes').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)changeScene(b.dataset.mode,storm)});
+  el('storms').addEventListener('click',e=>{const b=e.target.closest('[data-storm]');if(b)changeScene(mode,b.dataset.storm)});
+  el('sites').addEventListener('click',e=>{const b=e.target.closest('[data-site]');if(b)selectSite(+b.dataset.site)});
+  function add(amount){const p=[...s().points];p[site]+=amount;updatePlan(p)}
+  el('plus').addEventListener('click',()=>add(1));el('minus').addEventListener('click',()=>add(-1));
+  el('clear').addEventListener('click',()=>updatePlan(zeros()));el('undo').addEventListener('click',()=>{
+    const prev=history.pop();if(!prev)return;s().points=prev.points;s().tested=prev.tested;recalc();save();paint();
+  });
+  el('run').addEventListener('click',()=>{if(spent(s().points)!==budget||judging||running||isDone())return;
+    result=simulate(s().points,storm);judging=true;s().tested=false;play(true);
+  });
+  el('lock').addEventListener('click',()=>{
+    if(mode!=='duo'||isP2()||!s().tested||judging||running)return;
+    const points=[...s().points];sessions.duo[storm]={points:zeros(),tested:false,first:points};
+    history=[];site=0;recalc();save();paint();el('sites').querySelector('button').focus({preventScroll:true});
+  });
+  el('again').addEventListener('click',()=>{if(judging||running)return;sessions[mode][storm]=fresh();site=0;history=[];recalc();save();paint()});
+  el('replay').addEventListener('click',()=>{
+    if(running){stop();paint();return}
+    play(!judging&&frame===canSee()?.peakFrame);
+  });
+  el('scrub').addEventListener('input',()=>{if(judging)return;stop();frame=+el('scrub').value-1;paint()});
+  el('help').addEventListener('click',()=>el('helpbox').showModal());
+  window.addEventListener('pagehide',stop);
+  recalc();paint();
+})();
+
+</script>
+</body></html>
