@@ -57,7 +57,7 @@ function buildOption() {
       boundaryGap: false,
       axisLine: { lineStyle: { color: '#24435D' } },
       axisTick: { show: false },
-      axisLabel: { color: '#91A9BC', fontSize: 10, interval: props.compact ? 1 : 0 },
+      axisLabel: { show: !props.compact, color: '#91A9BC', fontSize: 10, interval: 0 },
     },
     yAxis: {
       type: 'value',

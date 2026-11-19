@@ -83,7 +83,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   position: fixed;
   left: 12px;
   bottom: 12px;
-  z-index: 90;
+  z-index: 200;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -92,7 +92,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   background: color-mix(in srgb, #04101b 84%, transparent);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-panel);
-  opacity: 0.45;
+  opacity: 0.9;
   transition: opacity var(--dur-2) var(--ease);
 }
 

@@ -27,9 +27,9 @@ const LAYOUT_A: NodeAnchor[] = [
 const LAYOUT_B: NodeAnchor[] = [
   { id: 'school', x: 24, y: 27, label: 'right' },
   { id: 'market', x: 18, y: 60, label: 'right' },
-  { id: 'park', x: 64, y: 21, label: 'left' },
-  { id: 'residential', x: 78, y: 50, label: 'left' },
-  { id: 'station', x: 49, y: 78, label: 'top' },
+  { id: 'park', x: 60, y: 20, label: 'left' },
+  { id: 'residential', x: 68, y: 56, label: 'left' },
+  { id: 'station', x: 45, y: 79, label: 'top' },
 ]
 
 /** C · 水文仪：示意图坐标系（SVG viewBox 0 0 100 100），从上游到下游自左向右 */

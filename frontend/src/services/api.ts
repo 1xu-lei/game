@@ -13,8 +13,11 @@ import type {
  * 降级到本地预览引擎，并在 UI 上明确标注「本地预览引擎」。
  */
 
-/** 本地 FastAPI 默认地址。后端静态托管前端产物时改为 '' 走同源相对路径。 */
-export const API_BASE = 'http://127.0.0.1:8000'
+/**
+ * 本地 FastAPI 默认地址。后端静态托管前端产物时改为 '' 走同源相对路径。
+ * 端口被占用时可用 VITE_API_BASE 覆盖（例如 VITE_API_BASE=http://127.0.0.1:8010）。
+ */
+export const API_BASE = (import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8000').replace(/\/$/, '')
 
 const TIMEOUT_MS = 1800
 

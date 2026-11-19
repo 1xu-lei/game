@@ -136,7 +136,7 @@ const rings = computed(() =>
           城市状态预测
           <span class="mono">积水 {{ store.preview.riskMetrics.waterlogRisk }} · 损失 {{ store.preview.riskMetrics.lossRisk }}</span>
         </div>
-        <ImpactChart :points="store.preview.forecast" :height="86" :legend="false" compact />
+        <ImpactChart :points="store.preview.forecast" :height="64" :legend="false" compact />
       </div>
       <div class="cta-col">
         <button type="button" class="cta" :disabled="!store.canSimulate" @click="showPreview = true">
@@ -277,7 +277,9 @@ const rings = computed(() =>
   position: absolute;
   top: 64px;
   right: 10px;
-  width: 312px;
+  width: 296px;
+  max-height: calc(100vh - 200px);
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -428,6 +430,7 @@ const rings = computed(() =>
   left: 10px;
   right: 10px;
   bottom: 10px;
+  min-height: 104px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -445,6 +448,7 @@ const rings = computed(() =>
 
 .chart {
   min-width: 0;
+  overflow: hidden;
 }
 
 .chart-head {
