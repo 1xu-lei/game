@@ -47,6 +47,7 @@ const accentOf = (id: SceneId) => `var(${SCENARIOS.find((s) => s.id === id)!.acc
         class="row"
         :class="{ 'is-selected': store.selectedScene === scene.id, 'is-zero': result.invested === 0 }"
         :style="{ '--accent': accentOf(scene.id) }"
+        :title="`${scene.name} · 点击查看场景详情`"
         @mouseenter="store.setHover(scene.id)"
         @mouseleave="store.setHover(null)"
         @click="store.selectScene(scene.id)"

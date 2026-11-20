@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Activity, ArrowUpRight, Droplets, Waves } from 'lucide-vue-next'
+import { Activity, ArrowLeftRight, ArrowUpRight, Droplets, Waves } from 'lucide-vue-next'
 import StrategyBadge from './StrategyBadge.vue'
 import { SCENARIO_MAP } from '@/config/sites'
+import type { RunComparison } from '@/services/compare'
 import type { SimulationResult } from '@/types'
 
 interface Props {
   /** 结算结果快照（后端响应或本地预览引擎输出），组件只渲染不计算 */
   result: SimulationResult
+  /** 与上一轮推演对比（本机快照派生，可能为空：本机只有这一轮） */
+  previous?: RunComparison | null
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { previous: null })
 
 const RISK_ITEMS = [
   { key: 'waterlogRisk', label: '积水风险' },
@@ -35,6 +38,11 @@ const recommendations = computed(() =>
     ...item,
     sceneName: SCENARIO_MAP[item.sceneId].name,
   })),
+)
+
+/** 对比块：只展示变化最大的 3 个场景，Δ 由两条已有结果相减得到 */
+const comparedScenes = computed(() =>
+  (props.previous?.sceneDeltas ?? []).filter((row) => row.delta !== 0).slice(0, 3),
 )
 </script>
 
@@ -82,6 +90,47 @@ const recommendations = computed(() =>
             <span class="synergy-detail">{{ item.detail }}</span>
           </li>
         </ul>
+      </div>
+
+      <div v-if="props.previous" class="block">
+        <header class="block-head">
+          <ArrowLeftRight :size="12" />
+          <span>与上一轮对比</span>
+          <em>{{ props.previous.rainLabel }} · 本机最近一条其它记录</em>
+        </header>
+        <div class="compare">
+          <div class="cmp-head">
+            <span class="cmp-prev num">{{ props.previous.prevScore }}</span>
+            <span class="cmp-arrow">→</span>
+            <span class="cmp-now num">{{ props.result.overallScore }}</span>
+            <span
+              class="cmp-delta num"
+              :class="props.previous.scoreDelta >= 0 ? 'is-up' : 'is-down'"
+            >
+              {{ props.previous.scoreDelta >= 0 ? `+${props.previous.scoreDelta}` : props.previous.scoreDelta }}
+            </span>
+            <span class="cmp-grade mono">
+              上一轮 {{ props.previous.prevGrade }} 级 · {{ props.previous.prevStrategy }}
+            </span>
+          </div>
+          <p class="cmp-alloc mono">
+            上一轮配置 {{ props.previous.allocationText }}
+            <template v-if="props.previous.allocationChanges.length">
+              · 本轮变化 {{ props.previous.allocationChanges.join(' / ') }}
+            </template>
+            <template v-else>· 本轮配置与上一轮相同</template>
+          </p>
+          <ul v-if="comparedScenes.length" class="cmp-scenes">
+            <li v-for="row in comparedScenes" :key="row.sceneId">
+              <span class="cmp-name">{{ row.name }}</span>
+              <span class="cmp-pair mono">{{ row.previous }} → {{ row.current }}</span>
+              <span class="cmp-scene-delta num" :class="row.delta >= 0 ? 'is-up' : 'is-down'">
+                {{ row.delta >= 0 ? `+${row.delta}` : row.delta }}
+              </span>
+            </li>
+          </ul>
+          <p v-else class="hint">两轮五个场景的净安全度没有差异，差别只在总分与雨型。</p>
+        </div>
       </div>
 
       <div class="block">
@@ -292,6 +341,92 @@ const recommendations = computed(() =>
   font-size: var(--fs-micro);
   line-height: 1.45;
   color: var(--text-muted);
+}
+
+/* —— 与上一轮对比 —— */
+.compare {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 7px 9px;
+  background: color-mix(in srgb, var(--surface-elevated) 24%, transparent);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-sm);
+}
+
+.cmp-head {
+  display: flex;
+  gap: 7px;
+  align-items: baseline;
+}
+
+.cmp-prev {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+
+.cmp-arrow {
+  font-size: var(--fs-micro);
+  color: var(--text-dim);
+}
+
+.cmp-now {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--amber);
+}
+
+.cmp-delta {
+  font-size: var(--fs-xs);
+}
+
+.cmp-delta.is-up {
+  color: var(--safe);
+}
+
+.cmp-delta.is-down {
+  color: var(--risk);
+}
+
+.cmp-grade {
+  margin-left: auto;
+  font-size: var(--fs-micro);
+  color: var(--text-dim);
+}
+
+.cmp-alloc {
+  font-size: var(--fs-micro);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.cmp-scenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.cmp-scenes li {
+  display: flex;
+  gap: 5px;
+  align-items: baseline;
+  font-size: var(--fs-micro);
+}
+
+.cmp-name {
+  color: var(--text-muted);
+}
+
+.cmp-pair {
+  color: var(--text-dim);
+}
+
+.cmp-scene-delta.is-up {
+  color: var(--safe);
+}
+
+.cmp-scene-delta.is-down {
+  color: var(--risk);
 }
 
 .dash-foot {

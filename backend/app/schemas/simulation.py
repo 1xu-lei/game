@@ -96,6 +96,38 @@ class SimulationResultOut(BaseModel):
     validationMessage: Optional[str] = None
 
 
+class SimulationSummaryOut(BaseModel):
+    simulationId: str
+    rainType: RainTypeId
+    allocation: Allocation
+    overallScore: float
+    grade: str
+    strategyType: str
+    createdAt: Optional[str] = None
+
+
+class HistoryOut(BaseModel):
+    items: list[SimulationSummaryOut]
+    total: int
+    isLocalOnly: bool
+
+
+class LeaderboardItemOut(BaseModel):
+    rank: int
+    simulationId: str
+    rainType: RainTypeId
+    allocation: Allocation
+    overallScore: float
+    grade: str
+    strategyType: str
+
+
+class LeaderboardOut(BaseModel):
+    items: list[LeaderboardItemOut]
+    isDemoData: bool
+    note: str
+
+
 class ScenarioConfigOut(BaseModel):
     id: SceneId
     name: str

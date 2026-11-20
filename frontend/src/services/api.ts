@@ -1,4 +1,7 @@
 import type {
+  HealthResponse,
+  HistoryResponse,
+  LeaderboardResponse,
   RainTypeConfig,
   ScenarioConfig,
   SimulationRequest,
@@ -47,4 +50,20 @@ export function postSimulationRun(payload: SimulationRequest): Promise<Simulatio
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
+}
+
+export function getSimulationById(simulationId: string): Promise<SimulationResult> {
+  return request<SimulationResult>(`/api/simulations/${encodeURIComponent(simulationId)}`)
+}
+
+export function getHistory(limit = 20): Promise<HistoryResponse> {
+  return request<HistoryResponse>(`/api/history?limit=${limit}`)
+}
+
+export function getLeaderboard(limit = 10): Promise<LeaderboardResponse> {
+  return request<LeaderboardResponse>(`/api/leaderboard?limit=${limit}`)
+}
+
+export function getHealth(): Promise<HealthResponse> {
+  return request<HealthResponse>('/api/health')
 }

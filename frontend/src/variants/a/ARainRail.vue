@@ -53,6 +53,25 @@ const pick = (id: RainType) => store.setRain(id)
           <span v-if="store.rainType === rain.id" class="rain-check"><Check :size="11" :stroke-width="3" /></span>
         </button>
       </div>
+      <footer class="rain-meter">
+        <span class="meter-label mono">RAIN LOAD</span>
+        <span class="meter-bars" role="img" :aria-label="`雨量强度 ${Math.round(store.rainIntensity * 100)}%`">
+          <i
+            v-for="n in 5"
+            :key="n"
+            :class="{ 'is-on': n <= Math.round(store.rainIntensity * 5) }"
+          />
+        </span>
+        <span class="meter-value mono">{{ Math.round(store.rainIntensity * 100) }}%</span>
+        <button
+          type="button"
+          class="layer-toggle"
+          :class="{ 'is-on': store.rainLayerOn }"
+          @click="store.rainLayerOn = !store.rainLayerOn"
+        >
+          雨滴 {{ store.rainLayerOn ? '开' : '关' }}
+        </button>
+      </footer>
     </section>
 
     <section class="panel panel--flow">
@@ -72,9 +91,62 @@ const pick = (id: RainType) => store.setRain(id)
 <style scoped>
 .rail {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: max-content minmax(0, 1fr);
   gap: 10px;
   min-height: 0;
+}
+
+.rain-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px 8px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.meter-label {
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+}
+
+.meter-bars {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.meter-bars i {
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--cyan) 14%, transparent);
+  transition: background var(--dur-1) var(--ease);
+}
+
+.meter-bars i.is-on {
+  background: var(--cyan);
+  box-shadow: 0 0 8px -2px var(--cyan);
+}
+
+.meter-value {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.layer-toggle {
+  margin-left: auto;
+  padding: 2px 7px;
+  font-size: 9px;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-pill);
+  transition: all var(--dur-1) var(--ease);
+}
+
+.layer-toggle.is-on {
+  color: var(--cyan);
+  border-color: color-mix(in srgb, var(--cyan) 45%, transparent);
 }
 
 .body {

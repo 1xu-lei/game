@@ -1,0 +1,179 @@
+{
+  "rulesVersion": "rain-five-v1",
+  "budget": {
+    "total": 5,
+    "pointsMin": 0,
+    "pointsMax": 5
+  },
+  "scenarioOrder": ["school", "market", "park", "residential", "station"],
+  "scenarios": {
+    "school": {
+      "id": "school",
+      "name": "学校",
+      "nameEn": "School",
+      "role": "人员安全",
+      "focus": ["预警", "避险", "防护"],
+      "benefit": "降低人员风险",
+      "flows_to": "park",
+      "transfer": 0.72,
+      "exposure": { "volume": 0.58, "peak": 0.62 },
+      "rollup": 0.8,
+      "curve": [0.0, 0.16, 0.3, 0.42, 0.54, 0.64]
+    },
+    "market": {
+      "id": "market",
+      "name": "集市",
+      "nameEn": "Market",
+      "role": "经济活动",
+      "focus": ["商铺防护", "经营保障"],
+      "benefit": "降低商业损失",
+      "flows_to": "residential",
+      "transfer": 0.7,
+      "exposure": { "volume": 0.66, "peak": 0.7 },
+      "rollup": 0.9,
+      "curve": [0.0, 0.22, 0.38, 0.52, 0.62, 0.7]
+    },
+    "park": {
+      "id": "park",
+      "name": "公园",
+      "nameEn": "Park",
+      "role": "城市调蓄",
+      "focus": ["渗透", "雨水花园", "调蓄设施"],
+      "benefit": "降低径流、减轻下游压力",
+      "flows_to": "station",
+      "transfer": 0.64,
+      "exposure": { "volume": 0.5, "peak": 0.46 },
+      "rollup": 0.8,
+      "curve": [0.0, 0.26, 0.44, 0.6, 0.72, 0.8]
+    },
+    "residential": {
+      "id": "residential",
+      "name": "居民区",
+      "nameEn": "Residential",
+      "role": "社区生活",
+      "focus": ["居住防护", "社区改造"],
+      "benefit": "减少住宅积水",
+      "flows_to": "station",
+      "transfer": 0.61,
+      "exposure": { "volume": 0.7, "peak": 0.66 },
+      "rollup": 0.95,
+      "curve": [0.0, 0.16, 0.29, 0.42, 0.54, 0.63]
+    },
+    "station": {
+      "id": "station",
+      "name": "车站",
+      "nameEn": "Station",
+      "role": "城市交通",
+      "focus": ["排水疏通", "泵站", "排水能力"],
+      "benefit": "缓解低洼汇流积水",
+      "flows_to": null,
+      "transfer": 0.0,
+      "exposure": { "volume": 0.78, "peak": 0.94 },
+      "rollup": 1.2,
+      "curve": [0.0, 0.22, 0.38, 0.53, 0.66, 0.76]
+    }
+  },
+  "flowLinks": [
+    { "from": "school", "to": "park", "label": "校园径流" },
+    { "from": "market", "to": "residential", "label": "集市来水" },
+    { "from": "park", "to": "station", "label": "公园下泄" },
+    { "from": "residential", "to": "station", "label": "社区下泄" }
+  ],
+  "rainTypes": {
+    "continuous": {
+      "id": "continuous",
+      "name": "持续型降雨",
+      "nameEn": "Continuous Rain",
+      "summary": "长时间中高强度降雨，累计水量大",
+      "challenge": ["考验调蓄容量", "持续排水能力", "设施长时间承载"],
+      "weights": { "volume": 0.72, "peak": 0.28 },
+      "convey_loss": 0.58,
+      "defense_modifier": { "park": 0.15, "station": -0.08 },
+      "score_weights": {
+        "school": 0.17,
+        "market": 0.15,
+        "park": 0.25,
+        "residential": 0.21,
+        "station": 0.22
+      }
+    },
+    "burst": {
+      "id": "burst",
+      "name": "短时强降雨",
+      "nameEn": "Cloudburst",
+      "summary": "短时间高强度降雨，峰值集中在数十分钟",
+      "challenge": ["考验峰值承载", "局部防护强度", "低洼区排水压力"],
+      "weights": { "volume": 0.3, "peak": 0.7 },
+      "convey_loss": 0.48,
+      "defense_modifier": { "park": -0.12, "station": 0.18, "market": 0.06 },
+      "score_weights": {
+        "school": 0.15,
+        "market": 0.14,
+        "park": 0.19,
+        "residential": 0.19,
+        "station": 0.33
+      }
+    }
+  },
+  "synergies": [
+    {
+      "id": "upstream_storage",
+      "name": "上游调蓄",
+      "conditions": { "park": 3 },
+      "bonus": 0.8,
+      "effect": "下游汇流压力下降"
+    },
+    {
+      "id": "coordinated_drainage",
+      "name": "排蓄协同",
+      "conditions": { "park": 2, "station": 2 },
+      "bonus": 1.0,
+      "effect": "调蓄与排水形成协同收益"
+    },
+    {
+      "id": "balanced_all",
+      "name": "全域均衡",
+      "conditions": { "school": 1, "market": 1, "park": 1, "residential": 1, "station": 1 },
+      "bonus": 1.2,
+      "effect": "五场景均为正投入的均衡奖励"
+    }
+  ],
+  "scoring": {
+    "rules_version": "rain-five-v1",
+    "score_min": 0.0,
+    "score_max": 100.0,
+    "raw_score_floor": 20.0,
+    "raw_score_ceiling": 34.0,
+    "display_score_floor": 24.0,
+    "display_score_ceiling": 100.0,
+    "risk_weights": {
+      "waterlog": { "station": 0.55, "residential": 0.25, "park": 0.2 },
+      "loss": { "market": 0.5, "residential": 0.5 }
+    },
+    "drainage_capacity_ratio": 0.85,
+    "forecast_steps": ["入流", "坡面汇流", "上游调蓄", "下游汇流", "车站峰值", "退水"],
+    "forecast_factors": [0.22, 0.55, 0.78, 0.92, 1.0, 0.68],
+    "baseline_allocation": {
+      "school": 1,
+      "market": 1,
+      "park": 1,
+      "residential": 1,
+      "station": 1
+    },
+    "grades": [
+      { "grade": "S", "min_score": 85.0, "label": "韧性优秀" },
+      { "grade": "A", "min_score": 72.0, "label": "韧性良好" },
+      { "grade": "B", "min_score": 58.0, "label": "基本可控" },
+      { "grade": "C", "min_score": 42.0, "label": "存在缺口" },
+      { "grade": "D", "min_score": 0.0, "label": "风险突出" }
+    ],
+    "stageLabels": [
+      "无专项投入",
+      "初步介入",
+      "稳定发展",
+      "深度发展",
+      "阶段突破",
+      "极限专精"
+    ]
+  }
+}

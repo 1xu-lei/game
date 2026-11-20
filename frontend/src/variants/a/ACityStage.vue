@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Building2, Bus, CloudRain, GraduationCap, Store, Trees, Waves } from 'lucide-vue-next'
+import RainField from '@/components/shared/RainField.vue'
 import { SCENARIO_MAP } from '@/config/sites'
 import { NODE_LAYOUTS } from '@/config/nodeLayout'
 import { useGameStore } from '@/stores/game'
@@ -57,7 +58,11 @@ const rainLabel = computed(() => (store.rainType === 'continuous' ? '持续型�
   <section class="stage" aria-label="城市全景视图">
     <img class="bg" src="/assets/scenes/city-overview.svg" alt="雨夜城市等距全景" draggable="false" />
     <div class="vignette" />
-    <div class="rain" :class="{ 'is-off': !store.rainLayerOn, 'is-heavy': store.rainType === 'burst' }" />
+    <RainField
+      :mode="store.rainType"
+      :intensity="store.rainIntensity"
+      :active="store.rainLayerOn"
+    />
 
     <svg class="flows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       <path
@@ -88,6 +93,7 @@ const rainLabel = computed(() => (store.rainType === 'continuous' ? '持续型�
         },
       ]"
       :style="{ left: `${n.x}%`, top: `${n.y}%`, '--accent': `var(${SCENARIO_MAP[n.id].accentVar})` }"
+      :title="`${SCENARIO_MAP[n.id].name} · 点击查看场景详情`"
       @click="store.selectScene(n.id)"
       @mouseenter="store.setHover(n.id)"
       @mouseleave="store.setHover(null)"

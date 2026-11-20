@@ -90,7 +90,8 @@ export interface SimulationEvent {
   index: number
   step: number
   stepLabel: string
-  sceneId?: SceneId
+  /** 无归属场景时为 null（与后端响应一致） */
+  sceneId?: SceneId | null
   text: string
   tone: EventTone
 }
@@ -149,6 +150,46 @@ export interface SimulationRequest {
 /** 结果来源：backend = 真实接口，preview = 本地预览引擎（必须在 UI 上标注） */
 export type DataSource = 'backend' | 'preview'
 
+/** 历史记录条目（GET /api/history） */
+export interface HistoryItem {
+  simulationId: string
+  rainType: RainType
+  allocation: AllocationMap
+  overallScore: number
+  grade: string
+  strategyType: string
+  /** 后端记录时间；本地快照为保存时间 */
+  createdAt: string | null
+}
+
+export interface HistoryResponse {
+  items: HistoryItem[]
+  total: number
+  /** 是否为本机 SQLite 数据（无联网共享） */
+  isLocalOnly: boolean
+}
+
+/** 榜单条目（GET /api/leaderboard，本地示例数据） */
+export interface LeaderboardItem extends HistoryItem {
+  rank: number
+}
+
+export interface LeaderboardResponse {
+  items: LeaderboardItem[]
+  isDemoData: boolean
+  note: string
+}
+
+/** GET /api/health */
+export interface HealthResponse {
+  status: string
+  rulesVersion: string
+  engine: string
+}
+
+/** 顶部导航项 key */
+export type NavKey = 'plan' | 'history' | 'rank' | 'settings' | 'pk'
+
 /** 推演过程固定 6 步（规格书 §5.7），仅展示元数据，不含任何计算 */
 export interface SimulationStep {
   step: number
@@ -158,7 +199,7 @@ export interface SimulationStep {
 
 /** 顶部导航项 */
 export interface NavItem {
-  key: string
+  key: NavKey
   label: string
   icon: string
 }

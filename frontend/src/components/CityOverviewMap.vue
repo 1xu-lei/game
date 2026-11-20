@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { CloudOff, CloudRain, Droplets, Map as MapIcon } from 'lucide-vue-next'
 import SceneNode from './SceneNode.vue'
+import RainField from './shared/RainField.vue'
 import { assetUrl } from '@/composables/useSceneVisuals'
 import { FLOW_LINKS, SCENARIO_MAP, SCENARIOS } from '@/config/sites'
 import { useScenarioStore } from '@/stores/scenario'
@@ -20,6 +21,9 @@ const emit = defineEmits<{ select: [id: SceneId] }>()
 const scenario = useScenarioStore()
 
 const rainOn = ref(true)
+
+/** 雨量强度 0–1：只驱动雨滴视觉，不参与规则计算 */
+const rainIntensity = computed(() => (scenario.rainType === 'burst' ? 0.92 : 0.55))
 
 /**
  * 节点坐标（百分比，基于 1200×760 的城市全景画布）
@@ -76,10 +80,11 @@ const selectedName = computed(() =>
         <div class="map-art">
           <img class="map-bg" :src="assetUrl('assets/scenes/city-overview.svg')" alt="城市等距全景" />
 
-          <div v-if="rainOn" class="rain-layer" aria-hidden="true">
-            <span class="rain-streak" />
-            <span class="rain-streak is-slow" />
-          </div>
+          <RainField
+            :mode="scenario.rainType"
+            :intensity="rainIntensity"
+            :active="rainOn"
+          />
 
           <svg class="map-flows" :viewBox="`0 0 100 ${ART_H}`" aria-hidden="true">
             <g class="flow-lines">

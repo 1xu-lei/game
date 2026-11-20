@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { NModal } from 'naive-ui'
-import { Activity, CloudRain, Minus, Play, Plus, Sparkles, TriangleAlert, Waves } from 'lucide-vue-next'
+import { computed } from 'vue'
+import { Activity, CloudRain, Minus, Play, Plus, TriangleAlert, Waves } from 'lucide-vue-next'
 import { RAIN_TYPES, SCENARIOS, SCENARIO_MAP } from '@/config/sites'
 import { useGameStore } from '@/stores/game'
+import { useSimulationStore } from '@/stores/simulation'
+import { useUiStore } from '@/stores/ui'
 import type { SceneId } from '@/types'
 import BrandMark from '@/components/shared/BrandMark.vue'
 import TopNav from '@/components/shared/TopNav.vue'
@@ -12,14 +13,10 @@ import SceneThumb from '@/components/shared/SceneThumb.vue'
 import ScoreRing from '@/components/shared/ScoreRing.vue'
 import ImpactChart from '@/components/shared/ImpactChart.vue'
 
-/**
- * B 版悬浮 HUD（叠在全屏城市之上）
- * 左上：品牌 + 雨型；中上：导航；右上：状态 / 规则版本 / 雨层开关
- * 右侧：紧凑分配器；底部：五环 + 趋势 + 琥珀主按钮
- * 全部数据只读 store.preview，不在这里算任何分数。
- */
+/** B 版悬浮 HUD（叠在全屏城市之上）：顶部条 / 右侧分配卡 / 底部舱。全部只读 store.preview。 */
 const store = useGameStore()
-const showPreview = ref(false)
+const sim = useSimulationStore()
+const ui = useUiStore()
 
 const accentOf = (id: SceneId) => `var(${SCENARIO_MAP[id].accentVar})`
 const rows = computed(() =>
@@ -42,42 +39,30 @@ const rings = computed(() =>
 <template>
   <div class="chrome">
     <header class="top">
-      <div class="top-left">
-        <BrandMark size="sm" />
-        <span class="sep" />
-        <button
-          v-for="rain in RAIN_TYPES"
-          :key="rain.id"
-          type="button"
-          class="rain-pill"
-          :class="{ 'is-on': store.rainType === rain.id }"
-          @click="store.setRain(rain.id)"
-        >
-          <CloudRain :size="12" :stroke-width="2" />
-          {{ rain.name }}
-        </button>
-      </div>
-
-      <nav class="top-nav">
-        <TopNav density="icons" />
-      </nav>
-
-      <div class="top-right">
-        <span class="status"><i class="dot" />科学规划 · 从容应对每一场暴雨</span>
-        <span class="rule mono">{{ store.preview.rulesVersion }}</span>
-        <button type="button" class="layer" :class="{ 'is-on': store.rainLayerOn }" @click="store.rainLayerOn = !store.rainLayerOn">
-          <Waves :size="12" :stroke-width="2" />
-          雨层
-        </button>
-      </div>
+      <BrandMark size="sm" />
+      <span class="sep" />
+      <button
+        v-for="rain in RAIN_TYPES"
+        :key="rain.id"
+        type="button"
+        class="pill"
+        :class="{ 'is-on': store.rainType === rain.id }"
+        @click="store.setRain(rain.id)"
+      >
+        <CloudRain :size="12" :stroke-width="2" />
+        {{ rain.name }}
+      </button>
+      <div class="nav"><TopNav :active="ui.nav" density="icons" @select="ui.setNav" /></div>
+      <span class="status"><i class="dot" />科学规划 · 从容应对每一场暴雨</span>
+      <span class="rule mono">{{ store.preview.rulesVersion }}</span>
+      <button type="button" class="pill" :class="{ 'is-on': store.rainLayerOn }" @click="store.rainLayerOn = !store.rainLayerOn">
+        <Waves :size="12" :stroke-width="2" />
+        雨层
+      </button>
     </header>
 
     <aside class="alloc">
-      <div class="alloc-head">
-        <span>资源分配</span>
-        <span class="mono">共 5 点</span>
-      </div>
-
+      <div class="alloc-head"><span>资源分配</span><span class="mono">共 5 点</span></div>
       <div
         v-for="{ scene, result, incReason } in rows"
         :key="scene.id"
@@ -106,11 +91,15 @@ const rings = computed(() =>
           </button>
         </div>
       </div>
-
       <footer class="alloc-foot">
         <div class="sum">
           <span>已分配 <b class="num" :class="{ ok: store.total === 5 }">{{ store.total }}/5</b></span>
           <span class="mono">剩余 {{ store.remaining }}</span>
+          <div class="macro">
+            <button type="button" @click.stop="store.fillBalanced()">均衡</button>
+            <i class="mdot" />
+            <button type="button" @click.stop="store.reset()">清空</button>
+          </div>
         </div>
         <p class="reason" :class="{ ok: store.canSimulate }">
           <TriangleAlert v-if="!store.canSimulate" :size="10" :stroke-width="2.2" />
@@ -121,52 +110,35 @@ const rings = computed(() =>
 
     <section class="dock">
       <div class="rings">
-        <ScoreRing
-          v-for="r in rings"
-          :key="r.id"
-          :value="r.value"
-          :label="r.name"
-          :accent="r.accent"
-          :size="46"
-        />
+        <ScoreRing v-for="r in rings" :key="r.id" :value="r.value" :label="r.name" :accent="r.accent" :size="46" />
       </div>
       <div class="chart">
         <div class="chart-head">
-          <Activity :size="11" :stroke-width="2" />
-          城市状态预测
+          <Activity :size="11" :stroke-width="2" />城市状态预测
           <span class="mono">积水 {{ store.preview.riskMetrics.waterlogRisk }} · 损失 {{ store.preview.riskMetrics.lossRisk }}</span>
         </div>
-        <ImpactChart :points="store.preview.forecast" :height="64" :legend="false" compact />
+        <ImpactChart :points="store.preview.forecast" :height="62" :legend="false" compact />
       </div>
       <div class="cta-col">
-        <button type="button" class="cta" :disabled="!store.canSimulate" @click="showPreview = true">
-          <Play :size="16" :stroke-width="2.4" />
-          开始推演
+        <button
+          type="button"
+          class="cta"
+          :disabled="!store.canSimulate || sim.loading"
+          @click="sim.run()"
+        >
+          <Play :size="16" :stroke-width="2.4" />{{ sim.loading ? '推演中…' : '开始推演' }}
         </button>
         <span class="cta-note">
-          {{ store.canSimulate ? `预期韧性 ${store.preview.overallScore} · ${store.preview.grade} 级` : '完成 5 点分配后可推演' }}
+          {{
+            sim.error
+              ? sim.error
+              : store.canSimulate
+                ? `预期韧性 ${store.preview.overallScore} · ${store.preview.grade} 级`
+                : '完成 5 点分配后可推演'
+          }}
         </span>
       </div>
     </section>
-
-    <NModal v-model:show="showPreview" preset="card" title="预演摘要" :style="{ width: '430px' }" class="b-modal">
-      <div class="modal">
-        <p class="modal-score">
-          <span class="num">{{ store.preview.overallScore }}</span>
-          <span>{{ store.preview.grade }} 级 · {{ store.preview.gradeLabel }} · {{ store.preview.strategyType }}</span>
-        </p>
-        <ul class="chips">
-          <li v-for="s in store.preview.triggeredSynergies" :key="s.id">
-            <Sparkles :size="10" :stroke-width="2" />{{ s.name }} +{{ s.gain }}
-          </li>
-          <li v-if="!store.preview.triggeredSynergies.length" class="muted">未触发联动</li>
-        </ul>
-        <ol class="events">
-          <li v-for="e in store.preview.events.slice(0, 4)" :key="e.index"><span class="mono">{{ e.step }}</span> {{ e.text }}</li>
-        </ol>
-        <p class="note">确定性规则引擎预演结果；完整结算页在下一阶段接入。</p>
-      </div>
-    </NModal>
   </div>
 </template>
 
@@ -189,17 +161,11 @@ const rings = computed(() =>
   right: 10px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   padding: 6px 12px;
   border-radius: var(--r-md);
-  background: color-mix(in srgb, #061019 76%, transparent);
+  background: color-mix(in srgb, #061019 78%, transparent);
   border: 1px solid var(--border-soft);
-}
-
-.top-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .sep {
@@ -208,7 +174,7 @@ const rings = computed(() =>
   background: var(--border);
 }
 
-.rain-pill {
+.pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -217,22 +183,17 @@ const rings = computed(() =>
   border: 1px solid var(--border-soft);
   color: var(--text-muted);
   font-size: var(--fs-micro);
+  white-space: nowrap;
 }
 
-.rain-pill.is-on {
+.pill.is-on {
   color: var(--cyan);
   border-color: var(--cyan-line);
   background: var(--cyan-soft);
 }
 
-.top-nav {
+.nav {
   margin-left: auto;
-}
-
-.top-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .status {
@@ -242,6 +203,7 @@ const rings = computed(() =>
   font-size: 9px;
   color: var(--text-dim);
   letter-spacing: 0.06em;
+  white-space: nowrap;
 }
 
 .dot {
@@ -255,49 +217,32 @@ const rings = computed(() =>
   font-size: 9px;
   color: var(--text-dim);
   letter-spacing: 0.08em;
-}
-
-.layer {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 9px;
-  color: var(--text-dim);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--r-pill);
-  padding: 3px 8px;
-}
-
-.layer.is-on {
-  color: var(--cyan);
-  border-color: var(--cyan-line);
+  white-space: nowrap;
 }
 
 .alloc {
   position: absolute;
-  top: 64px;
+  top: 62px;
   right: 10px;
-  width: 296px;
+  width: 292px;
   max-height: calc(100vh - 200px);
   overflow: auto;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   padding: 9px;
   border-radius: var(--r-md);
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-panel);
 }
 
 .alloc-head {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   font-size: var(--fs-micro);
   color: var(--text-muted);
   letter-spacing: 0.1em;
-  padding-bottom: 2px;
 }
 
 .row {
@@ -305,7 +250,7 @@ const rings = computed(() =>
   grid-template-columns: 34px minmax(0, 1fr) auto;
   align-items: center;
   gap: 7px;
-  padding: 4px 5px;
+  padding: 3px 4px;
   border-radius: var(--r-sm);
   border: 1px solid transparent;
   cursor: pointer;
@@ -412,13 +357,37 @@ const rings = computed(() =>
   color: var(--safe);
 }
 
+.macro {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.macro button {
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+  transition: color var(--dur-1) var(--ease);
+}
+
+.macro button:hover {
+  color: var(--cyan);
+}
+
+.mdot {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
 .reason {
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 9px;
-  color: var(--amber);
   line-height: 1.4;
+  color: var(--amber);
 }
 
 .reason.ok {
@@ -430,14 +399,14 @@ const rings = computed(() =>
   left: 10px;
   right: 10px;
   bottom: 10px;
-  min-height: 104px;
+  min-height: 92px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
   padding: 8px 12px;
   border-radius: var(--r-md);
-  background: color-mix(in srgb, #061019 82%, transparent);
+  background: color-mix(in srgb, #061019 84%, transparent);
   border: 1px solid var(--border-soft);
 }
 
@@ -469,7 +438,7 @@ const rings = computed(() =>
   flex-direction: column;
   align-items: flex-end;
   gap: 3px;
-  width: 168px;
+  width: 164px;
 }
 
 .cta {

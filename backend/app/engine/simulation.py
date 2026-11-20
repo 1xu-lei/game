@@ -112,7 +112,11 @@ def _build_events(allocation: dict, rain_type: dict, core: dict) -> list:
                 scene_id,
             )
 
-    school, park, market, residential, station = (water[key] for key in SCENARIO_ORDER)
+    school = water["school"]
+    park = water["park"]
+    market = water["market"]
+    residential = water["residential"]
+    station = water["station"]
     add(
         3,
         f"校园残余径流 {int(round_half_up(school.residual * 100, 0))} 经输送后 "

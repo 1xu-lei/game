@@ -1,4 +1,4 @@
-import type { NavItem, RainTypeConfig, ScenarioConfig, SceneId, SimulationStep } from '@/types'
+﻿import type { NavItem, RainTypeConfig, ScenarioConfig, SceneId, SimulationStep } from '@/types'
 
 /** 建设资源总量（规格书 §3.1：固定 5 点，必须恰好分完） */
 export const TOTAL_POINTS = 5
@@ -18,7 +18,7 @@ export const SCENARIOS: ScenarioConfig[] = [
     flowRole: '上游 · 汇入公园',
     accentVar: '--scene-school',
     asset: 'assets/scenes/school.svg',
-    yieldCurve: [0, 0.17, 0.3, 0.45, 0.58, 0.68],
+    yieldCurve: [0, 0.16, 0.3, 0.42, 0.54, 0.64],
     transfer: 0.72,
   },
   {
@@ -44,7 +44,7 @@ export const SCENARIOS: ScenarioConfig[] = [
     flowRole: '中游 · 承接学校 · 排向车站',
     accentVar: '--scene-park',
     asset: 'assets/scenes/park.svg',
-    yieldCurve: [0, 0.25, 0.43, 0.6, 0.72, 0.8],
+    yieldCurve: [0, 0.26, 0.44, 0.6, 0.72, 0.8],
     transfer: 0.64,
   },
   {
@@ -70,7 +70,7 @@ export const SCENARIOS: ScenarioConfig[] = [
     flowRole: '下游 · 两路汇流的最终压力承受点',
     accentVar: '--scene-station',
     asset: 'assets/scenes/station.svg',
-    yieldCurve: [0, 0.2, 0.36, 0.51, 0.66, 0.78],
+    yieldCurve: [0, 0.22, 0.38, 0.53, 0.66, 0.76],
     transfer: 0,
   },
 ]
@@ -129,13 +129,14 @@ export const RAIN_TYPES: RainTypeConfig[] = [
 
 export const NAV_ITEMS: NavItem[] = [
   { key: 'plan', label: '城市规划', icon: 'LayoutDashboard' },
+  { key: 'pk', label: '双人 PK', icon: 'Swords' },
   { key: 'history', label: '历史记录', icon: 'History' },
   { key: 'rank', label: '排行榜', icon: 'BarChart3' },
   { key: 'settings', label: '设置', icon: 'Settings' },
 ]
 
 /** 规则版本：与后端对齐后由接口下发 */
-export const RULES_VERSION = 'rain-five-v1-preview'
+export const RULES_VERSION = 'rain-five-v1'
 
 /** 推演过程展示用的固定 6 步（规格书 §5.7）。只是标签，不含计算。 */
 export const SIM_STEPS: SimulationStep[] = [

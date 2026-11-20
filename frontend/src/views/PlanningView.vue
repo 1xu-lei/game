@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue'
 import { CloudRain, Play } from 'lucide-vue-next'
 import { NButton } from 'naive-ui'
@@ -12,16 +12,20 @@ import ExpectedImpactPanel from '@/components/ExpectedImpactPanel.vue'
 import { useAllocationStore } from '@/stores/allocation'
 import { useScenarioStore } from '@/stores/scenario'
 import { useSimulationStore } from '@/stores/simulation'
+import { runPreview } from '@/engine/previewEngine'
 import type { SceneId } from '@/types'
 
 const allocation = useAllocationStore()
 const scenario = useScenarioStore()
 const sim = useSimulationStore()
 
+/** 预期影响预览：与后端同口径的规则引擎输出（本页不重算任何规则） */
+const preview = computed(() => runPreview(allocation.allocation, scenario.rainType))
+
 /** 详情浮层的当前场景结果：来自预览引擎，不额外计算 */
 const detailResult = computed(() =>
   scenario.selectedScene
-    ? (sim.preview.scenarioResults.find((item) => item.sceneId === scenario.selectedScene) ?? null)
+    ? (preview.value.scenarioResults.find((item) => item.sceneId === scenario.selectedScene) ?? null)
     : null,
 )
 
@@ -78,7 +82,7 @@ function start(): void {
     </template>
 
     <template #bottom>
-      <ExpectedImpactPanel :result="sim.preview" />
+      <ExpectedImpactPanel :result="preview" />
 
       <div class="run-col">
         <span class="run-hint">{{ runHint ?? '推演数值来自当前配置，跳过动画不影响结果' }}</span>

@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { BarChart3, History, LayoutDashboard, Settings } from 'lucide-vue-next'
+import { BarChart3, History, LayoutDashboard, Settings, Swords } from 'lucide-vue-next'
 import { NAV_ITEMS } from '@/config/sites'
+import type { NavKey } from '@/types'
 
 /**
- * 顶部导航：4 项 + 当前项琥珀下划线。
- * 刻意做成「文字导航 + 下划线」而不是四块按钮——按钮排会立刻变成后台模板观感。
+ * 顶部导航：5 项 + 当前项琥珀下划线。
+ * 刻意做成「文字导航 + 下划线」而不是几块按钮——按钮排会立刻变成后台模板观感。
  */
 withDefaults(defineProps<{ active?: string; density?: 'full' | 'icons' | 'minimal' }>(), {
   active: 'plan',
   density: 'full',
 })
 
-const emit = defineEmits<{ (e: 'select', key: string): void }>()
+const emit = defineEmits<{ (e: 'select', key: NavKey): void }>()
 
-const ICONS = { LayoutDashboard, History, BarChart3, Settings } as const
+const ICONS = { LayoutDashboard, History, BarChart3, Settings, Swords } as const
 type IconName = keyof typeof ICONS
 </script>
 
@@ -25,6 +26,8 @@ type IconName = keyof typeof ICONS
       class="item"
       :class="{ 'is-active': item.key === active }"
       type="button"
+      :aria-label="item.label"
+      :aria-current="item.key === active ? 'page' : undefined"
       @click="emit('select', item.key)"
     >
       <component :is="ICONS[item.icon as IconName]" :size="density === 'icons' ? 17 : 15" :stroke-width="1.7" />

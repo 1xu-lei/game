@@ -19,6 +19,9 @@ export const useGameStore = defineStore('game', () => {
   /** 当前配置的预览结果：随分配/雨型立即重算，纯确定性 */
   const preview = computed<SimulationResult>(() => runPreview(allocation.value, rainType.value))
 
+  /** 雨量强度 0–1：只驱动降雨可视化层，不参与任何规则计算 */
+  const rainIntensity = computed(() => (rainType.value === 'burst' ? 0.92 : 0.55))
+
   const total = computed(() => totalAllocated(allocation.value))
   const remaining = computed(() => 5 - total.value)
   const validationMessage = computed(() => validateAllocation(allocation.value))
@@ -78,6 +81,7 @@ export const useGameStore = defineStore('game', () => {
     hoveredScene,
     rainLayerOn,
     preview,
+    rainIntensity,
     total,
     remaining,
     validationMessage,

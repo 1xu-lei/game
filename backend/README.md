@@ -47,6 +47,8 @@ CORS 已放行 `http://localhost:5199`、`http://127.0.0.1:5199`（以及 4173�
 | GET | `/api/config/rain-types` | 持续型降雨 / 短时强降雨（共用同一引擎，仅参数不同） |
 | POST | `/api/simulations/run` | 推演；总和必须恰好 5、每场景 0–5 整数，否则 422 |
 | GET | `/api/simulations/{id}` | 按 simulationId 读取已保存结果，未找到 404 |
+| GET | `/api/history?limit=20` | 最近推演记录（`limit` 1–100），最新在前；`total` 为总记录数，`isLocalOnly` 恒为 true |
+| GET | `/api/leaderboard?limit=10` | 本地记录生成的示例榜单，分数倒序、`rank` 从 1 连续；`isDemoData` 恒为 true |
 
 响应字段与前端 `frontend/src/types/index.ts` 一一对应：`simulationId`、`overallScore`、`grade`、`gradeLabel`、
 `strategyType`、`scenarioResults`、`riskMetrics`、`triggeredSynergies`、`forecast`、`events`、`explanations`、

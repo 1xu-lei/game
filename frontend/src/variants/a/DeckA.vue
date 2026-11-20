@@ -1,8 +1,9 @@
-<script setup lang="ts">
-import { computed, ref } from 'vue'
-import { NModal } from 'naive-ui'
-import { Activity, CloudRain, Play, Sparkles, TriangleAlert } from 'lucide-vue-next'
+﻿<script setup lang="ts">
+import { computed } from 'vue'
+import { Activity, CloudRain, Play, TriangleAlert } from 'lucide-vue-next'
 import { useGameStore } from '@/stores/game'
+import { useSimulationStore } from '@/stores/simulation'
+import { useUiStore } from '@/stores/ui'
 import BrandMark from '@/components/shared/BrandMark.vue'
 import TopNav from '@/components/shared/TopNav.vue'
 import ARainRail from './ARainRail.vue'
@@ -16,8 +17,8 @@ import AImpactDock from './AImpactDock.vue'
  * 1366 宽下中央舞台仍有 700px 以上，不会被三栏挤废。
  */
 const store = useGameStore()
-const showPreview = ref(false)
-const activeNav = ref('plan')
+const sim = useSimulationStore()
+const ui = useUiStore()
 
 const preview = computed(() => store.preview)
 const rainLabel = computed(() => (store.rainType === 'continuous' ? '持续型降雨' : '短时强降雨'))
@@ -28,11 +29,11 @@ const blockReason = computed(() => store.validationMessage ?? '')
   <div class="deck">
     <header class="topbar">
       <BrandMark />
-      <TopNav :active="activeNav" @select="activeNav = $event" />
+      <TopNav :active="ui.nav" @select="ui.setNav" />
       <div class="status">
         <span class="source-chip">
           <CloudRain :size="11" :stroke-width="2" />
-          本地预览引擎
+          {{ sim.sourceLabel }}
         </span>
         <span class="sep" />
         <span class="mono">{{ rainLabel }} · {{ store.preview.rulesVersion }}</span>
@@ -47,12 +48,21 @@ const blockReason = computed(() => store.validationMessage ?? '')
     <aside class="cell cell--right">
       <AAllocator />
       <div class="cta-wrap">
-        <button type="button" class="cta" :disabled="!store.canSimulate" @click="showPreview = true">
+        <button
+          type="button"
+          class="cta"
+          :disabled="!store.canSimulate || sim.loading"
+          @click="sim.run()"
+        >
           <Play :size="18" :stroke-width="2.2" />
-          <span>开始推演</span>
+          <span>{{ sim.loading ? '推演中…' : '开始推演' }}</span>
         </button>
         <p class="cta-sub">
-          <template v-if="store.canSimulate">
+          <template v-if="sim.error">
+            <TriangleAlert :size="11" :stroke-width="2" />
+            {{ sim.error }}
+          </template>
+          <template v-else-if="store.canSimulate">
             <Activity :size="11" :stroke-width="2" />
             预期韧性 <b class="num">{{ preview.overallScore }}</b> · {{ preview.grade }} 级
           </template>
@@ -65,32 +75,6 @@ const blockReason = computed(() => store.validationMessage ?? '')
     </aside>
 
     <section class="cell cell--dock"><AImpactDock /></section>
-
-    <NModal v-model:show="showPreview" preset="card" title="预演摘要" class="rc-modal" :style="{ width: '440px' }">
-      <div class="summary">
-        <div class="score-hero">
-          <span class="score num">{{ preview.overallScore }}</span>
-          <span class="score-meta">
-            <b>{{ preview.grade }} 级 · {{ preview.gradeLabel }}</b>
-            <em>{{ preview.strategyType }} · {{ rainLabel }}</em>
-          </span>
-        </div>
-        <ul class="chips">
-          <li v-for="s in preview.triggeredSynergies" :key="s.id" class="chip">
-            <Sparkles :size="11" :stroke-width="2" />{{ s.name }} +{{ s.gain }}
-          </li>
-          <li v-if="!preview.triggeredSynergies.length" class="chip chip--muted">未触发联动</li>
-        </ul>
-        <ul class="events">
-          <li v-for="e in preview.events.slice(0, 4)" :key="e.index" :class="`tone-${e.tone}`">
-            <span class="mono step">{{ e.step }}</span>{{ e.text }}
-          </li>
-        </ul>
-        <p class="disclaim">
-          以上为确定性规则引擎的预演结果；完整结算页（分项明细 / 因果解释 / 优化建议）在下一阶段接入。
-        </p>
-      </div>
-    </NModal>
   </div>
 </template>
 
@@ -211,122 +195,5 @@ const blockReason = computed(() => store.validationMessage ?? '')
 
 .cta-sub b {
   color: var(--amber);
-}
-
-.summary {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.score-hero {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--line-hair);
-}
-
-.score {
-  font-size: var(--fs-hero);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--amber);
-}
-
-.score-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  font-size: var(--fs-xs);
-}
-
-.score-meta em {
-  font-style: normal;
-  font-size: var(--fs-micro);
-  color: var(--text-muted);
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 7px;
-  font-size: var(--fs-micro);
-  color: var(--teal);
-  background: color-mix(in srgb, var(--teal) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
-  border-radius: var(--r-pill);
-}
-
-.chip--muted {
-  color: var(--text-dim);
-  background: transparent;
-  border-color: var(--border-soft);
-}
-
-.events {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
-
-.events li {
-  display: flex;
-  gap: 7px;
-  line-height: 1.5;
-}
-
-.step {
-  flex: none;
-  width: 14px;
-  color: var(--text-dim);
-  font-size: var(--fs-micro);
-}
-
-.tone-good {
-  color: var(--safe);
-}
-
-.tone-warn {
-  color: var(--amber);
-}
-
-.tone-bad {
-  color: var(--danger);
-}
-
-.disclaim {
-  padding-top: 8px;
-  border-top: 1px dashed var(--line-hair);
-  font-size: var(--fs-micro);
-  line-height: 1.6;
-  color: var(--text-dim);
-}
-</style>
-
-<style>
-.rc-modal.n-card {
-  background: var(--surface) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: var(--shadow-lift) !important;
-}
-
-.rc-modal .n-card-header__main {
-  color: var(--text) !important;
-  font-size: var(--fs-sm) !important;
-  letter-spacing: 0.08em;
-}
-
-.rc-modal .n-card__content {
-  color: var(--text) !important;
 }
 </style>

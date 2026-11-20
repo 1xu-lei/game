@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { NModal } from 'naive-ui'
+import { computed } from 'vue'
 import {
   ArrowRight,
   Building2,
   Bus,
   CloudRain,
   GraduationCap,
+  Minus,
   Play,
+  Plus,
   Store,
   Trees,
 } from 'lucide-vue-next'
 import { RAIN_TYPES, SCENARIO_MAP } from '@/config/sites'
 import { NODE_LAYOUTS } from '@/config/nodeLayout'
 import { useGameStore } from '@/stores/game'
+import { useSimulationStore } from '@/stores/simulation'
+import { useUiStore } from '@/stores/ui'
 import type { SceneId } from '@/types'
 import BrandMark from '@/components/shared/BrandMark.vue'
 import TopNav from '@/components/shared/TopNav.vue'
@@ -27,7 +30,8 @@ import LevelPips from '@/components/shared/LevelPips.vue'
  * 五场景 / 四条固定水路 / 5 点规则 与其它版本完全一致；数值全部只读 store.preview。
  */
 const store = useGameStore()
-const showPreview = ref(false)
+const sim = useSimulationStore()
+const ui = useUiStore()
 const nodes = NODE_LAYOUTS.c
 
 const ICONS = {
@@ -117,7 +121,7 @@ const synergyRules = [
         </button>
       </div>
       <div class="nav">
-        <TopNav density="icons" />
+        <TopNav :active="ui.nav" density="icons" @select="ui.setNav" />
       </div>
       <span class="rule mono">RULES {{ store.preview.rulesVersion }} · 简化指标 0–100</span>
     </header>
@@ -195,6 +199,7 @@ const synergyRules = [
         class="puck"
         :class="{ 'is-selected': store.selectedScene === n.id, 'is-zero': resultOf[n.id].invested === 0, 'is-sink': n.id === 'station' }"
         :style="{ left: `${n.x}%`, top: `${n.y}%`, '--accent': accentOf(n.id) }"
+        :title="`${SCENARIO_MAP[n.id].name} · 点击查看场景详情`"
         @click="store.selectScene(n.id)"
         @mouseenter="store.setHover(n.id)"
         @mouseleave="store.setHover(null)"
@@ -241,6 +246,17 @@ const synergyRules = [
         </div>
       </section>
 
+      <section class="alloc-bar">
+        <span class="alloc-label">资源分配</span>
+        <span class="alloc-value num" :class="{ 'is-ok': store.total === 5 }">{{ store.total }} / 5</span>
+        <span class="alloc-remain" :class="{ 'is-warn': store.remaining > 0 }">剩余 {{ store.remaining }}</span>
+        <div class="alloc-links">
+          <button type="button" @click="store.fillBalanced()">均衡</button>
+          <i class="link-dot" />
+          <button type="button" @click="store.reset()">清空</button>
+        </div>
+      </section>
+
       <section class="table-wrap">
         <table class="table">
           <thead>
@@ -262,7 +278,29 @@ const synergyRules = [
               @click="store.selectScene(s.sceneId)"
             >
               <td>{{ SCENARIO_MAP[s.sceneId].name }}</td>
-              <td class="num">{{ s.invested }}</td>
+              <td class="ctl">
+                <span class="stepper" @click.stop>
+                  <button
+                    type="button"
+                    class="step"
+                    :disabled="s.invested <= 0"
+                    :title="store.decBlockReason(s.sceneId) ?? '减少 1 点'"
+                    @click="store.decrease(s.sceneId)"
+                  >
+                    <Minus :size="10" :stroke-width="2.6" />
+                  </button>
+                  <b class="num">{{ s.invested }}</b>
+                  <button
+                    type="button"
+                    class="step"
+                    :disabled="!!store.incBlockReason(s.sceneId)"
+                    :title="store.incBlockReason(s.sceneId) ?? '增加 1 点'"
+                    @click="store.increase(s.sceneId)"
+                  >
+                    <Plus :size="10" :stroke-width="2.6" />
+                  </button>
+                </span>
+              </td>
               <td class="num">{{ s.inflow }}</td>
               <td class="num strong">{{ s.effective }}</td>
               <td class="num" :class="s.deltaValue > 0 ? 'up' : s.deltaValue < 0 ? 'down' : ''">
@@ -296,35 +334,27 @@ const synergyRules = [
         </div>
       </div>
       <div class="cta-col">
-        <button type="button" class="cta" :disabled="!store.canSimulate" @click="showPreview = true">
+        <button
+          type="button"
+          class="cta"
+          :disabled="!store.canSimulate || sim.loading"
+          @click="sim.run()"
+        >
           <Play :size="16" :stroke-width="2.4" />
-          开始推演
+          {{ sim.loading ? '推演中…' : '开始推演' }}
           <ArrowRight :size="15" :stroke-width="2.4" />
         </button>
         <span class="cta-note">
-          {{ store.canSimulate ? `已分配 ${store.total}/5 · 预期 ${store.preview.overallScore} 分` : store.validationMessage }}
+          {{
+            sim.error
+              ? sim.error
+              : store.canSimulate
+                ? `已分配 ${store.total}/5 · 预期 ${store.preview.overallScore} 分`
+                : store.validationMessage
+          }}
         </span>
       </div>
     </footer>
-
-    <NModal v-model:show="showPreview" preset="card" title="预演摘要" :style="{ width: '430px' }" class="c-modal">
-      <div class="modal-body">
-        <p class="modal-score">
-          <span class="num">{{ store.preview.overallScore }}</span>
-          <span>{{ store.preview.grade }} 级 · {{ store.preview.gradeLabel }} · {{ store.preview.strategyType }}</span>
-        </p>
-        <ul class="modal-syn">
-          <li v-for="t in store.preview.triggeredSynergies" :key="t.id">{{ t.name }} +{{ t.gain }}</li>
-          <li v-if="!store.preview.triggeredSynergies.length" class="muted">未触发联动</li>
-        </ul>
-        <ol class="modal-events">
-          <li v-for="e in store.preview.events.slice(0, 4)" :key="e.index">
-            <span class="mono">{{ e.step }}</span> {{ e.text }}
-          </li>
-        </ol>
-        <p class="modal-note">结果来自确定性规则引擎预演；完整结算页在下一阶段接入。</p>
-      </div>
-    </NModal>
   </div>
 </template>
 
@@ -791,6 +821,109 @@ const synergyRules = [
 
 .table .down {
   color: var(--danger);
+}
+
+/* —— 资源分配（C 版同样必须能分配 5 点：规格书 §3.1 / §9.2）—— */
+.alloc-bar {
+  display: flex;
+  flex: none;
+  gap: 8px;
+  align-items: baseline;
+  padding: 5px 8px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--bg) 42%, transparent);
+}
+
+.alloc-label {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.alloc-value {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.alloc-value.is-ok {
+  color: var(--safe);
+}
+
+.alloc-remain {
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+}
+
+.alloc-remain.is-warn {
+  color: var(--amber);
+}
+
+.alloc-links {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.alloc-links button {
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+  transition: color var(--dur-1) var(--ease);
+}
+
+.alloc-links button:hover {
+  color: var(--cyan);
+}
+
+.link-dot {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.table .ctl {
+  width: 62px;
+  padding: 2px 3px;
+}
+
+.stepper {
+  display: inline-flex;
+  gap: 1px;
+  align-items: center;
+  padding: 1px;
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--bg) 46%, transparent);
+}
+
+.stepper b {
+  min-width: 12px;
+  font-size: var(--fs-micro);
+  text-align: center;
+  color: var(--text);
+}
+
+.step {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  border-radius: 3px;
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+
+.step:hover:not(:disabled) {
+  color: var(--cyan);
+  background: var(--cyan-soft);
+}
+
+.step:disabled {
+  color: color-mix(in srgb, var(--text-dim) 70%, transparent);
+  cursor: not-allowed;
 }
 
 .syn h3 {

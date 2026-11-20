@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { Building2, Bus, GraduationCap, Store, Trees } from 'lucide-vue-next'
 import { SCENARIO_MAP, FLOW_LINKS } from '@/config/sites'
 import { NODE_LAYOUTS } from '@/config/nodeLayout'
+import RainField from '@/components/shared/RainField.vue'
 import { useGameStore } from '@/stores/game'
 import type { SceneId } from '@/types'
 
@@ -55,6 +56,7 @@ const pipes = computed(() =>
 
 <template>
   <div class="map">
+    <RainField :mode="store.rainType" :intensity="store.rainIntensity" :active="store.rainLayerOn" />
     <div class="canvas">
       <svg class="sheet" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
         <defs>
@@ -125,6 +127,7 @@ const pipes = computed(() =>
         class="puck"
         :class="{ 'is-selected': store.selectedScene === n.id, 'is-zero': byId[n.id].invested === 0 }"
         :style="{ left: `${n.x}%`, top: `${n.y}%`, '--accent': `var(${SCENARIO_MAP[n.id].accentVar})` }"
+        :title="`${SCENARIO_MAP[n.id].name} · 点击查看场景详情`"
         @click="store.selectScene(n.id)"
         @mouseenter="store.setHover(n.id)"
         @mouseleave="store.setHover(null)"
